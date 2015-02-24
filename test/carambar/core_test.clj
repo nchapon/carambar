@@ -24,6 +24,11 @@
       <version>4.11</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.5</version>
+    </dependency>
   </dependencies>
 </project>")
 
@@ -37,3 +42,18 @@
 (def pom (zip/xml-zip xml-tree))
 
 (fact (zip-xml/xml1-> pom :name zip-xml/text) => "simple")
+
+(fact (zip-xml/xml-> pom :dependencies :dependency (zip-xml/tag= :groupId) zip-xml/text) => ["junit" "org.slf4j"])
+
+(defn dependency->map [dependency]
+  {:groupId (zip-xml/xml1-> dependency :groupId zip-xml/text)
+   :artifactId (zip-xml/xml1-> dependency :artifactId zip-xml/text)
+   :version (zip-xml/xml1-> dependency :version zip-xml/text)
+   :scope (zip-xml/xml1-> dependency :scope zip-xml/text)})
+
+(defn pom->map
+  []
+  (let [pom (zip/xml-zip xml-tree)]
+    {:dependencies (mapv dependency->map (zip-xml/xml-> pom :dependencies :dependency))}))
+
+(pom->map)
