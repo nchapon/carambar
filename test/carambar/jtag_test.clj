@@ -1,5 +1,6 @@
 (ns carambar.jtag-test
-  (:require [midje.sweet :refer :all]))
+  (:require [midje.sweet :refer :all]
+            [carambar.jtag :refer :all]))
 
 
 (def lines (clojure.string/split-lines (slurp "test/App.java")))
@@ -16,3 +17,7 @@
            (map package)
            (remove nil?)
            (first)) => "org.carambar.jx")
+
+(fact (query-pakage-for-class "Class") => "org.clojure.test")
+
+(fact (query-pakage-for-class "Clazz") => nil)
