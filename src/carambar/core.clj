@@ -7,9 +7,10 @@
             [ring.middleware.json :as middleware]))
 
 
+
 (defroutes app-routes
   (GET "/" [] (response {:carambar "OK"}))
-  (GET "/packages" [classname] (response (jtag/query-pakage-for-class classname))))
+  (GET "/packages" [class] (response (jtag/query-pakage-for-class class))))
 
 (def app (-> (handler/api app-routes)
              (middleware/wrap-json-body)
