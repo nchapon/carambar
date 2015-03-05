@@ -18,7 +18,7 @@
            (remove nil?)
            (first)) => "org.carambar.jx")
 
-(fact (query-pakage-for-class "Class") => {:packages ["org.clojure.test"]})
+(fact (query-pakage-for-class "Class") => {:data [{:package "org.clojure.test"}]})
 
 (fact (query-pakage-for-class "Clazz") => nil)
 
