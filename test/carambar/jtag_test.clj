@@ -3,6 +3,23 @@
             [carambar.jtag :refer :all]))
 
 
+;; /home/nchapon/opt/m2_repo/org/slf4j/slf4j-api/1.7.6/slf4j-api-1.7.6-sources.jar
+
+(def filename "/home/nchapon/opt/m2_repo/org/slf4j/slf4j-api/1.7.6/slf4j-api-1.7.6-sources.jar")
+
+
+
+(defn filenames-in-zip
+  "doc-string"
+  [f]
+  (let [z (java.util.zip.ZipFile. f)]
+    (map #(.getName %) (enumeration-seq (.entries z)))))
+
+
+(filenames-in-zip filename)
+
+
+
 (def lines (clojure.string/split-lines (slurp "test/App.java")))
 
 
