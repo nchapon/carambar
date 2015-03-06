@@ -5,6 +5,10 @@
                   {:class "AnotherClass"
                    :package "org.clojure.another"}]))
 
+(defn add-class
+  "Add class c with package p"
+  [c p]
+  (swap! clazz conj {:class c :package p}))
 
 (defn wrap-results
   "Wrap results"

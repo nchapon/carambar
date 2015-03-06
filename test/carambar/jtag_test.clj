@@ -22,7 +22,4 @@
 
 (fact (query-pakage-for-class "Clazz") => nil)
 
-
-;; (fact (wrap-results "result") => {:results "result"})
-
-;; (fact (wrap-results nil) => nil)
+(fact (add-class "C2" "P2") => (contains {:class "C2" :package "P2"}))
