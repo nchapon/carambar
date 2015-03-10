@@ -3,6 +3,10 @@
             [carambar.cache :refer :all]))
 
 
-(fact (add-entry "/path/test.jar") => [{:entry "/path/test.jar"}])
+(fact (add-entry {:name "/path/test.jar" :values []}) => (contains {:name "/path/test.jar" :values []}))
 
-(fact (update-entry "/path/test.jar") => [{:entry "/path/test.jar"}])
+(fact (create-entry "/path/test.jar") => {:name "/path/test.jar" :values []})
+
+(def entry {:name "/path/test.jar" :values []})
+
+(fact (update-entry entry "/path/a/b/Test.class") => {:name "/path/test.jar" :values ["/path/a/b/Test.class"]})

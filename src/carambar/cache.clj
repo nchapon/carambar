@@ -6,10 +6,16 @@
 
 (defn add-entry
   "Add cache entry"
-  [path]
-  (swap! cache conj {:entry path}))
+  [entry]
+  (swap! cache conj entry))
 
-(defn update-entry
+(defn create-entry
   "Update cache entry"
   [path]
-  @cache)
+  {:name path
+   :values []})
+
+(defn update-entry
+  "Update entry"
+  [entry value]
+  (update-in entry [:values] conj value))
