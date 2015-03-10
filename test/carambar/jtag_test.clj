@@ -25,27 +25,6 @@
                    (java.io.InputStreamReader. (.getInputStream zipfile entry)))]
     (reduce conj [] (line-seq rdr))))
 
-(defn filter-package
-  "doc-string"
-  [lines]
-  (filter #(re-matches #"^package (.*);$" %) lines))
-
-(defn filenames-in-zip
-  "doc-string"
-  [f]
-  (let [z (java.util.zip.ZipFile. f)]
-    (map #(filter-package (read-content % z)) (entries z))))
-
-
-(fact (filenames-in-zip filename) => ["org.carambar"])
-
-
-;; (let [z (java.util.zip.ZipFile. filename)]
-;;     (map #(.getName %) (entries z)))
-
-
-(def lines (clojure.string/split-lines (slurp "test/resources/projects/simple/src/main/java/org/carambar/App.java")))
-
 
 (defn package
   "doc-string"
@@ -53,6 +32,47 @@
   (when-let [matches (re-matches #"^package (.*);$" s)]
     (second matches)))
 
+
+(defn filter-classname
+  "doc-string"
+  [filename]
+  (when-let [matches (re-matches #".*\/(.*).java$" filename)]
+    (second matches)))
+
+
+(defn filter-package
+  "doc-string"
+  [lines]
+  (->> lines
+           (map package)
+           (remove nil?)
+           (first)))
+
+(defn create-class [entry zipfile]
+  {:class (filter-classname (.getName entry))
+   :package (filter-package (read-content entry zipfile))})
+
+
+(defn filenames-in-zip
+  "doc-string"
+  [f]
+  (let [z (java.util.zip.ZipFile. f)]
+    (map #(create-class % z) (entries z))))
+
+
+(fact (filenames-in-zip filename) => [{:class "App" :package "org.carambar"}])
+
+;; (let [z (java.util.zip.ZipFile. filename)]
+;;     (map #(.getName %) (entries z)))
+
+(def classname "org/carambar/App.java")
+
+(when-let [matches (re-matches #".*\/(.*).java$" classname)]
+    (second matches))
+
+
+
+(def lines (clojure.string/split-lines (slurp "test/resources/projects/simple/src/main/java/org/carambar/App.java")))
 
 (fact (->> lines
            (map package)
