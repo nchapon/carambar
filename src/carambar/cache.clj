@@ -3,6 +3,11 @@
 
 (def cache (atom []))
 
+(defn filename->javaclass
+  "Converts filename to fully qualified java class name"
+  [filename]
+  (when-let [matches (re-matches #"(.*).class$" filename)]
+    (clojure.string/replace (second matches) "/" ".")))
 
 (defn class-file?
   "Is class file"
@@ -13,15 +18,6 @@
   "Zipfile entries"
   [zipfile]
   (filter #(class-file? (.getName %)) (enumeration-seq (.entries zipfile))))
-
-(defn parse
-  "doc-string"
-  [jar]
-  (let [z (java.util.zip.ZipFile. jar)]
-    (-> jar
-        create-entry
-        (update-entry (map #(.getName %) (entries z))))))
-
 
 (defn add-entry
   "Add cache entry"
@@ -38,3 +34,11 @@
   "Update entry"
   [entry value]
   (update-in entry [:values] into value))
+
+(defn parse
+  "doc-string"
+  [jar]
+  (let [z (java.util.zip.ZipFile. jar)]
+    (-> jar
+        create-entry
+        (update-entry (map #(.getName %) (entries z))))))
