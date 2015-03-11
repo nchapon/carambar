@@ -62,8 +62,9 @@
 
 (fact (filenames-in-zip filename) => [{:class "App" :package "org.carambar"}])
 
-;; (let [z (java.util.zip.ZipFile. filename)]
-;;     (map #(.getName %) (entries z)))
+(def jarfile "/home/nchapon/opt/m2_repo/org/carambar/simple/1.0-SNAPSHOT/simple-1.0-SNAPSHOT.jar")
+(let [z (java.util.zip.ZipFile. jarfile)]
+    (map #(.getName %) (enumeration-seq (.entries z))))
 
 (def classname "org/carambar/App.java")
 
