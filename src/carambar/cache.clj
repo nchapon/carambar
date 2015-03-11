@@ -42,3 +42,13 @@
     (-> jar
         create-entry
         (update-entry (map #(.getName %) (entries z))))))
+
+(defn find
+  "Find CLASS from cache"
+  [class]
+  @cache)
+
+(defn create-cache []
+  (for [path (clojure.string/split (System/getProperty "sun.boot.class.path") #":")]
+    (try (add-entry (parse path))
+         (catch Exception e path))))

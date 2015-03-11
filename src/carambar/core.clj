@@ -1,6 +1,6 @@
 (ns carambar.core
   (:use ring.util.response)
-  (:require [carambar.jtag :as jtag]
+  (:require [carambar.cache :as cache]
             [compojure.handler :as handler]
             [compojure.route :as route]
             [compojure.core :refer [GET defroutes]]
@@ -10,7 +10,8 @@
 
 (defroutes app-routes
   (GET "/" [] (response {:carambar "OK"}))
-  (GET "/packages" [class] (response (jtag/query-pakage-for-class class))))
+  (GET "/index" [] (response (cache/create-cache)))
+  (GET "/packages" [class] (response (cache/find class))))
 
 (def app (-> (handler/api app-routes)
              (middleware/wrap-json-body)
