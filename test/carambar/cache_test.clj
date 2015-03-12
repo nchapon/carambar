@@ -5,12 +5,6 @@
 
 (fact (add-entry {:name "/path/test.jar" :values []}) => (contains {:name "/path/test.jar" :values []}))
 
-(fact (create-entry "/path/test.jar") => {:name "/path/test.jar" :values []})
-
-(def entry {:name "/path/test.jar" :values []})
-
-(fact (update-entry entry "a/b/c/Test.class") => {:name "/path/test.jar" :values ["a/b/c/Test.class"]})
-
 ;; need to run mvn clean install before...
 (def jarfile-with-two-classes "/home/nchapon/opt/m2_repo/org/carambar/simple/1.0-SNAPSHOT/simple-1.0-SNAPSHOT.jar")
 
@@ -19,5 +13,3 @@
 (fact (:values (parse jarfile-with-two-classes)) => ["org.carambar.App" "org.carambar.MyClass"])
 
 (fact (filename->javaclass "a/b/c/MyClass.class") => "a.b.c.MyClass")
-
-;;(def rt "/home/nchapon/opt/jdk1.8.0/jre/lib/rt.jar")

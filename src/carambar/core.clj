@@ -6,12 +6,10 @@
             [compojure.core :refer [GET defroutes]]
             [ring.middleware.json :as middleware]))
 
-
-
 (defroutes app-routes
   (GET "/" [] (response {:carambar "OK"}))
   (GET "/index" [] (response (cache/create-cache)))
-  (GET "/packages" [class] (response (cache/find class))))
+  (GET "/packages" [class] (response (cache/find-class class))))
 
 (def app (-> (handler/api app-routes)
              (middleware/wrap-json-body)

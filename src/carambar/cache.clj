@@ -3,6 +3,11 @@
 
 (def cache (atom []))
 
+
+
+(def boot-classpath (clojure.string/split (System/getProperty "sun.boot.class.path") #":"))
+
+
 (defn filename->javaclass
   "Converts filename to fully qualified java class name"
   [filename]
@@ -24,31 +29,19 @@
   [entry]
   (swap! cache conj entry))
 
-(defn create-entry
-  "Create entry"
-  [path]
-  {:name path
-   :values []})
-
-(defn update-entry
-  "Update entry"
-  [entry value]
-  (update-in entry [:values] into value))
-
 (defn parse
   "doc-string"
   [jar]
   (let [z (java.util.zip.ZipFile. jar)]
-    (-> jar
-        create-entry
-        (update-entry (map #(.getName %) (entries z))))))
+    {:name jar
+     :values (map #(filename->javaclass (.getName %)) (entries z))}))
 
-(defn find
+(defn find-class
   "Find CLASS from cache"
   [class]
   @cache)
 
 (defn create-cache []
-  (for [path (clojure.string/split (System/getProperty "sun.boot.class.path") #":")]
+  (for [path (filter #(.endsWith % ".jar") boot-classpath)]
     (try (add-entry (parse path))
          (catch Exception e path))))
