@@ -10,6 +10,6 @@
 
 (def slf4j "/home/nchapon/opt/m2_repo/org/slf4j/slf4j-api/1.7.8/slf4j-api-1.7.8.jar")
 
-(fact (:values (parse jarfile-with-two-classes)) => ["org.carambar.App" "org.carambar.MyClass"])
+(fact (:values (parse jarfile-with-two-classes)) => (contains ["org.carambar.App" "org.carambar.MyClass"] :in-any-order))
 
 (fact (filename->javaclass "a/b/c/MyClass.class") => "a.b.c.MyClass")
