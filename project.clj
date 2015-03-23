@@ -8,7 +8,8 @@
                  [ring/ring-core "1.3.2"]
                  [compojure "1.3.2"]
                  [ring/ring-json "0.3.1"]]
-  :profiles {:dev {:dependencies [[midje "1.6.3"]]}}
+  :profiles {:dev {:dependencies [[midje "1.6.3"]
+                                  [javax.servlet/servlet-api "2.5"]]}}
   :plugins [[lein-ring "0.9.2"]]
   :uberjar-name "carambar.jar"
   :ring {:handler carambar.core/app
