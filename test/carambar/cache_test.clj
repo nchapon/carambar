@@ -33,16 +33,15 @@
     (binding [*out* wrt]
       (dotimes [i (count classes)]
         (with-entry zip (nth classes i)
-              (println "foo"))))))
+          (println "foo"))))))
 
-(with-state-changes
-  [(before :facts (do
-                    (jarfile "foo.jar" ["Foo.class" "foo/Bar.class"])
-                    (jarfile "bar.jar" ["bar/Foo.class" "bar/Baz.class"])
-                    (with-redefs [boot-classpath ["/tmp/foo.jar" "/tmp/bar.jar"]])
-                    (create-cache)
-                    ))]
-  (fact "Parse a jar with two classes"
-    (parse "/tmp/foo.jar") => {:name "/tmp/foo.jar" :values ["Foo" "foo.Bar"]})
-  (fact "Cache has two entries"
-    (count @cache) => 2))
+(with-redefs [boot-classpath ["/tmp/foo.jar" "/tmp/bar.jar"]]
+  (with-state-changes
+    [(before :facts (do
+                      (jarfile "foo.jar" ["Foo.class" "foo/Bar.class"])
+                      (jarfile "bar.jar" ["bar/Foo.class" "bar/Baz.class"])
+                      (reset! cache [])))]
+    (fact "Should have two classes when Jar has two files"
+      (parse "/tmp/foo.jar") => {:name "/tmp/foo.jar" :values ["Foo" "foo.Bar"]})
+    (fact "Cache should have two entries"
+      (count (create-cache)) => 2)))
