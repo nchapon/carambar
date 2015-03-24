@@ -27,7 +27,7 @@
      (.closeEntry zip#)))
 
 (defn jarfile [filename classes]
-  (with-open [file (io/output-stream filename)
+  (with-open [file (io/output-stream (str tmpdir "/" filename))
               zip  (ZipOutputStream. file)
               wrt  (io/writer zip)]
     (binding [*out* wrt]
@@ -35,7 +35,14 @@
         (with-entry zip (nth classes i)
               (println "foo"))))))
 
-(fact "Parse one jar with two classes"
-  (let [filename (str tmpdir "/" "test.jar")
-        jar (jarfile filename ["Foo.class" "bar/Baz.class"])]
-    (parse filename) => {:name "/tmp/test.jar" :values ["Foo" "bar.Baz"]}))
+(with-state-changes
+  [(before :facts (do
+                    (jarfile "foo.jar" ["Foo.class" "foo/Bar.class"])
+                    (jarfile "bar.jar" ["bar/Foo.class" "bar/Baz.class"])
+                    (with-redefs [boot-classpath ["/tmp/foo.jar" "/tmp/bar.jar"]])
+                    (create-cache)
+                    ))]
+  (fact "Parse a jar with two classes"
+    (parse "/tmp/foo.jar") => {:name "/tmp/foo.jar" :values ["Foo" "foo.Bar"]})
+  (fact "Cache has two entries"
+    (count @cache) => 2))
