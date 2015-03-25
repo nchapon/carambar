@@ -39,13 +39,18 @@
 
 (defn filter-entry
   "Filter entry by CLASS"
-  [values class]
-  (filter #(.endsWith % class)  values))
+  [entry class]
+  (let [filtered (filter #(.endsWith % class)  (:values entry))]
+    (when (not-empty filtered)
+      (assoc entry :values (vec filtered)))))
 
 (defn find-class
-  "Find CLASS from cache"
-  [class]
-  (update-in @cache values filter-entry class))
+  "Find CLASSNAME from cache"
+  [s]
+  (for [e @cache
+        :let [f (filter-entry e s)]
+        :when (not-empty f)]
+    f))
 
 (defn create-cache []
   (for [path (filter #(.endsWith % ".jar") boot-classpath)]

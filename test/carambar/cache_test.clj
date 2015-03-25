@@ -47,3 +47,7 @@
                     (add-entry {:name "foo.jar" :values ["com.foo.Bar" "com.foo.Baz"]})))]
   (fact "Find class by name"
     (find-class "Baz") => [{:name "foo.jar" :values ["com.foo.Baz"]}]))
+
+(facts "Filter cache entry by classname"
+  (filter-entry {:name "foo.jar" :values ["com.foo.Bar" "com.foo.Baz"]} "Baz") => {:name "foo.jar" :values ["com.foo.Baz"]}
+  (filter-entry {:name "foo.jar" :values ["com.foo.Bar" "com.foo.Baz"]} "ZZ") => nil)
