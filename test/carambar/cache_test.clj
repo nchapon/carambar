@@ -11,11 +11,6 @@
 (fact "Convert filename to javaclas."
   (filename->javaclass "a/b/c/MyClass.class") => "a.b.c.MyClass")
 
-;; need to run mvn clean install before...
-(def jarfile-with-two-classes "/home/nchapon/opt/m2_repo/org/carambar/simple/1.0-SNAPSHOT/simple-1.0-SNAPSHOT.jar")
-
-(fact (:values (parse jarfile-with-two-classes)) => (contains ["org.carambar.App" "org.carambar.MyClass"] :in-any-order))
-
 (def tmpdir (System/getProperty "java.io.tmpdir"))
 
 (defmacro ^:private with-entry
@@ -45,3 +40,10 @@
       (parse "/tmp/foo.jar") => {:name "/tmp/foo.jar" :values ["Foo" "foo.Bar"]})
     (fact "Cache should have two entries"
       (count (create-cache)) => 2)))
+
+(with-state-changes
+  [(before :facts (do
+                    (reset! cache [])
+                    (add-entry {:name "foo.jar" :values ["com.foo.Bar" "com.foo.Baz"]})))]
+  (fact "Find class by name"
+    (find-class "Baz") => [{:name "foo.jar" :values ["com.foo.Baz"]}]))

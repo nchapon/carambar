@@ -36,10 +36,16 @@
     {:name jar
      :values (map #(filename->javaclass (.getName %)) (entries z))}))
 
+
+(defn filter-entry
+  "Filter entry by CLASS"
+  [values class]
+  (filter #(.endsWith % class)  values))
+
 (defn find-class
   "Find CLASS from cache"
   [class]
-  @cache)
+  (update-in @cache values filter-entry class))
 
 (defn create-cache []
   (for [path (filter #(.endsWith % ".jar") boot-classpath)]
