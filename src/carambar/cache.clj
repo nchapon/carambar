@@ -37,10 +37,16 @@
      :values (map #(filename->javaclass (.getName %)) (entries z))}))
 
 
+(defn match-class?
+  [s re]
+  (if-not (empty? (re-find (re-pattern (str ".*\\." re)) s))
+    true
+    false))
+
 (defn filter-entry
   "Filter entry by CLASS"
-  [entry class]
-  (let [filtered (filter #(.endsWith % class)  (:values entry))]
+  [entry s]
+  (let [filtered (filter #(match-class? % s)  (:values entry))]
     (when (not-empty filtered)
       (assoc entry :values (vec filtered)))))
 
