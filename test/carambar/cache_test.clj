@@ -54,11 +54,11 @@
 
 
 (facts "Match class name starts with."
-  (match-class? "com.foo.Baz" "Baz") => true
-  (match-class? "com.foo.BazBar" "Baz") => true
-  (match-class? "com.foo.FooBaz" "Baz") => false)
+  (match-class? "Baz" "com.foo.Baz") => true
+  (match-class? "Baz" "com.foo.BazBar") => true
+  (match-class? "Baz" "com.foo.FooBaz") => false)
 
 (facts "Match class name exactly."
-  (match-class-exactly? "com.foo.Baz" "Baz") => true
-  (match-class-exactly? "com.foo.BazBar" "Baz") => false
-  (match-class-exactly? "com.foo.FooBaz" "Baz") => false)
+  (match-class-exactly? "Baz" "com.foo.Baz") => true
+  (match-class-exactly? "Baz" "com.foo.BazBar") => false
+  (match-class-exactly? "Baz" "com.foo.FooBaz") => false)
