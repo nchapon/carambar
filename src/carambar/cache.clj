@@ -54,7 +54,7 @@
   [entry s]
   (let [filtered (filter #(match-class? s %)  (:values entry))]
     (when (not-empty filtered)
-      (assoc entry :values (vec filtered)))))
+      (vec filtered))))
 
 (defn find-class
   "Find CLASSNAME from cache"
