@@ -53,7 +53,12 @@
   (filter-entry {:name "foo.jar" :values ["com.foo.Bar" "com.foo.Baz"]} "ZZ") => nil)
 
 
-(facts "Match class name starts with"
+(facts "Match class name starts with."
   (match-class? "com.foo.Baz" "Baz") => true
   (match-class? "com.foo.BazBar" "Baz") => true
   (match-class? "com.foo.FooBaz" "Baz") => false)
+
+(facts "Match class name exactly."
+  (match-class-exactly? "com.foo.Baz" "Baz") => true
+  (match-class-exactly? "com.foo.BazBar" "Baz") => false
+  (match-class-exactly? "com.foo.FooBaz" "Baz") => false)
