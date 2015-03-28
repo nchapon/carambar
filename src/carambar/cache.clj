@@ -59,10 +59,10 @@
 (defn find-class
   "Find CLASSNAME from cache"
   [s]
-  (for [e @cache
-        :let [f (filter-entry e s)]
-        :when (not-empty f)]
-    f))
+  (flatten (for [e @cache
+             :let [f (filter-entry e s)]
+             :when (not-empty f)]
+         f)))
 
 (defn create-cache []
   (for [path (filter #(.endsWith % ".jar") boot-classpath)]
