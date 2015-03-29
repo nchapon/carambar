@@ -45,22 +45,20 @@
 
 (defn match-class?
   [re s]
-  (if-not (empty? (re-find (re-pattern (str ".*\\." re)) s))
+  (if-not (empty? (re-find (re-pattern (str ".*\\." re ".+")) s))
     true
     false))
 
 (defn filter-entry
   "Filter entry by CLASS"
   [entry s]
-  (let [filtered (filter #(match-class? s %)  (:values entry))]
-    (when (not-empty filtered)
-      (vec filtered))))
+  (filter #(re-matches (re-pattern (str ".*\\." s "$")) %)  (:values entry)))
 
 (defn find-class
   "Find CLASSNAME from cache"
-  [s]
+  [classname]
   (flatten (for [e @cache
-             :let [f (filter-entry e s)]
+                 :let [f (filter #(match-class-exactly? classname %) (:values e))]
              :when (not-empty f)]
          f)))
 

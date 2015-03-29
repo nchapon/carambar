@@ -50,11 +50,11 @@
 
 (facts "Filter cache entry by classname"
   (filter-entry {:name "foo.jar" :values ["com.foo.Bar" "com.foo.Baz"]} "Baz") => ["com.foo.Baz"]
-  (filter-entry {:name "foo.jar" :values ["com.foo.Bar" "com.foo.Baz"]} "ZZ") => nil)
+  (filter-entry {:name "foo.jar" :values ["com.foo.Bar" "com.foo.Baz"]} "ZZ") => [])
 
 
 (facts "Match class name starts with."
-  (match-class? "Baz" "com.foo.Baz") => true
+  (match-class? "Baz" "com.foo.Baz") => false
   (match-class? "Baz" "com.foo.BazBar") => true
   (match-class? "Baz" "com.foo.FooBaz") => false)
 
