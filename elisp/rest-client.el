@@ -10,7 +10,7 @@
 (require 'json)
 
 (with-current-buffer
-    (url-retrieve-synchronously "http://localhost:3000/packages?class=Class")
+    (url-retrieve-synchronously "http://localhost:3000/classes?name=List")
   (goto-char url-http-end-of-headers)
   (let* ((json-object-type 'plist)
         (rtnval (json-read)))
