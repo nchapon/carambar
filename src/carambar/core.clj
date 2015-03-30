@@ -9,7 +9,7 @@
 (defroutes app-routes
   (GET "/" [] (response {:carambar "OK"}))
   (GET "/index" [] (response (repository/create-cache)))
-  (GET "/classes" [name] (response {:classes ["java.util.List" "java.util.ArrayList"]})))
+  (GET "/classes" [filter] (response {:classes ["java.util.List" "java.util.ArrayList"]})))
 
 (def app (-> (handler/api app-routes)
              (middleware/wrap-json-body)
