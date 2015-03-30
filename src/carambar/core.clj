@@ -1,6 +1,6 @@
 (ns carambar.core
   (:use ring.util.response)
-  (:require [carambar.cache :as cache]
+  (:require [carambar.repository :as repository]
             [compojure.handler :as handler]
             [compojure.route :as route]
             [compojure.core :refer [GET defroutes]]
@@ -8,7 +8,7 @@
 
 (defroutes app-routes
   (GET "/" [] (response {:carambar "OK"}))
-  (GET "/index" [] (response (cache/create-cache)))
+  (GET "/index" [] (response (repository/create-cache)))
   (GET "/classes" [name] (response {:classes ["java.util.List" "java.util.ArrayList"]})))
 
 (def app (-> (handler/api app-routes)

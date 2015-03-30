@@ -1,6 +1,6 @@
-(ns carambar.cache-test
+(ns carambar.repository-test
   (:require [midje.sweet :refer :all]
-            [carambar.cache :refer :all]
+            [carambar.repository :refer :all]
             [clojure.java.io :as io])
   (:import [java.util.zip ZipEntry ZipOutputStream]))
 
@@ -35,7 +35,7 @@
     [(before :facts (do
                       (jarfile "foo.jar" ["Foo.class" "foo/Bar.class"])
                       (jarfile "bar.jar" ["bar/Foo.class" "bar/Baz.class"])
-                      (reset! cache [])))]
+                      (reset! repo [])))]
     (fact "Should have two classes when Jar has two files"
       (parse "/tmp/foo.jar") => {:name "/tmp/foo.jar" :values ["Foo" "foo.Bar"]})
     (fact "Cache should have two entries"
@@ -43,7 +43,7 @@
 
 (with-state-changes
   [(before :facts (do
-                    (reset! cache [])
+                    (reset! repo [])
                     (add-entry {:name "foo.jar" :values ["com.foo.Bar" "com.foo.Baz"]})))]
   (fact "Find class by name"
     (find-class "Baz") => ["com.foo.Baz"]))

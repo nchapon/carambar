@@ -1,12 +1,9 @@
-(ns carambar.cache)
+(ns carambar.repository)
 
 
-(def cache (atom []))
-
-
+(def repo (atom []))
 
 (def boot-classpath (clojure.string/split (System/getProperty "sun.boot.class.path") #":"))
-
 
 (defn filename->javaclass
   "Converts filename to fully qualified java class name"
@@ -25,9 +22,9 @@
   (filter #(class-file? (.getName %)) (enumeration-seq (.entries zipfile))))
 
 (defn add-entry
-  "Add cache entry"
+  "Add repo entry"
   [entry]
-  (swap! cache conj entry))
+  (swap! repo conj entry))
 
 (defn parse
   "doc-string"
@@ -55,9 +52,9 @@
   (filter #(re-matches (re-pattern (str ".*\\." s "$")) %)  (:values entry)))
 
 (defn find-class
-  "Find CLASSNAME from cache"
+  "Find CLASSNAME from repo"
   [classname]
-  (flatten (for [e @cache
+  (flatten (for [e @repo
                  :let [f (filter #(match-class-exactly? classname %) (:values e))]
              :when (not-empty f)]
          f)))
