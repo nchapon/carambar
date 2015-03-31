@@ -6,7 +6,7 @@
 
 
 (fact "Add entry"
-  (add-entry {:name "/path/test.jar" :values []}) => (contains {:name "/path/test.jar" :values []}))
+  (add-entry {:artifactid "/path/test.jar" :classes []}) => (contains {:artifactid "/path/test.jar" :classes []}))
 
 (fact "Convert filename to javaclas."
   (filename->javaclass "a/b/c/MyClass.class") => "a.b.c.MyClass")
@@ -37,20 +37,22 @@
                       (jarfile "bar.jar" ["bar/Foo.class" "bar/Baz.class"])
                       (reset! repo [])))]
     (fact "Should have two classes when Jar has two files"
-      (parse "/tmp/foo.jar") => {:name "/tmp/foo.jar" :values ["Foo" "foo.Bar"]})
+      (parse "/tmp/foo.jar") => {:artifactid "/tmp/foo.jar" :classes ["Foo" "foo.Bar"]})
     (fact "Cache should have two entries"
       (count (create-cache)) => 2)))
 
 (with-state-changes
   [(before :facts (do
                     (reset! repo [])
-                    (add-entry {:name "foo.jar" :values ["com.foo.Bar" "com.foo.Baz"]})))]
+                    (add-entry {:artifactid "foo.jar" :classes ["com.foo.Bar" "com.foo.Baz"]})
+                    (add-entry {:artifactid "bar.jar" :classes ["com.bar.Bar" "com.bar.Buzz"]}))
+           )]
   (fact "Find class by name"
     (find-class "Baz") => ["com.foo.Baz"]))
 
 (facts "Filter cache entry by classname"
-  (filter-entry {:name "foo.jar" :values ["com.foo.Bar" "com.foo.Baz"]} "Baz") => ["com.foo.Baz"]
-  (filter-entry {:name "foo.jar" :values ["com.foo.Bar" "com.foo.Baz"]} "ZZ") => [])
+  (filter-entry {:artifactid "foo.jar" :classes ["com.foo.Bar" "com.foo.Baz"]} "Baz") => ["com.foo.Baz"]
+  (filter-entry {:artifactid "foo.jar" :classes ["com.foo.Bar" "com.foo.Baz"]} "ZZ") => [])
 
 
 (facts "Match class name starts with."

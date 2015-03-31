@@ -3,7 +3,7 @@
 
 (def repo (atom []))
 
-(def boot-classpath (clojure.string/split (System/getProperty "sun.boot.class.path") #":"))
+(def boot-classpath (filter #(re-matches #".*lib/rt.jar" %) (clojure.string/split (System/getProperty "sun.boot.class.path") #":")))
 
 (defn filename->javaclass
   "Converts filename to fully qualified java class name"
@@ -30,8 +30,8 @@
   "doc-string"
   [jar]
   (let [z (java.util.zip.ZipFile. jar)]
-    {:name jar
-     :values (map #(filename->javaclass (.getName %)) (entries z))}))
+    {:artifactid jar
+     :classes (map #(filename->javaclass (.getName %)) (entries z))}))
 
 
 (defn match-class-exactly?
@@ -49,13 +49,13 @@
 (defn filter-entry
   "Filter entry by CLASS"
   [entry s]
-  (filter #(re-matches (re-pattern (str ".*\\." s "$")) %)  (:values entry)))
+  (filter #(re-matches (re-pattern (str ".*\\." s "$")) %)  (:classes entry)))
 
 (defn find-class
   "Find CLASSNAME from repo"
   [classname]
   (flatten (for [e @repo
-                 :let [f (filter #(match-class-exactly? classname %) (:values e))]
+                 :let [f (filter #(match-class-exactly? classname %) (:classes e))]
              :when (not-empty f)]
          f)))
 
