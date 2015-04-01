@@ -55,9 +55,8 @@
   "Find CLASSNAME from repo"
   [classname]
   (flatten (for [e @repo
-                 :let [f (filter #(match-class-exactly? classname %) (:classes e))]
-             :when (not-empty f)]
-         f)))
+                :let [f (filter #(match-class-exactly? classname %) (:classes e))]]
+            f)))
 
 (defn create-cache []
   (for [path (filter #(.endsWith % ".jar") boot-classpath)]
