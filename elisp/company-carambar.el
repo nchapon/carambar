@@ -1,13 +1,17 @@
+;;; Testing emacs integration with company-modes
+
 (require 'url-vars)
 (require 'url-dav)
 
 (require 'json)
 
-(defun call-carambar (s)
+
+
+(defun company-carambar--candidates (prefix)
     "DOCSTRING"
   (interactive)
   (with-current-buffer
-      (url-retrieve-synchronously (format "http://localhost:3000/classes?search=%s" s))
+      (url-retrieve-synchronously (format "http://localhost:3000/classes?search=%s" prefix))
   (goto-char url-http-end-of-headers)
   (setq json-array-type 'vector
         json-object-type 'alist)
@@ -20,10 +24,11 @@
 (defun company-carambar (command &optional arg &rest ignored)
   (interactive (list 'interactive))
   (case command
-    (interactive (company-begin-backend 'company-sample-backend))
+    (interactive (company-begin-backend 'company-carambar))
     (prefix (and (eq major-mode 'java-mode)
                  (company-grab-symbol)))
     (candidates
-     (call-carambar arg))))
+     (company-carambar--candidates arg))))
+
 
 (add-to-list 'company-backends 'company-carambar)
