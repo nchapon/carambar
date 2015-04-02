@@ -51,12 +51,18 @@
   [entry s]
   (filter #(re-matches (re-pattern (str ".*\\." s "$")) %)  (:classes entry)))
 
+
 (defn find-class
   "Find CLASSNAME from repo"
   [classname]
-  (flatten (for [e @repo
-                :let [f (filter #(match-class-exactly? classname %) (:classes e))]]
-            f)))
+  (flatten
+   (concat
+    (for [e @repo
+                 :let [f (filter #(match-class-exactly? classname %) (:classes e))]]
+      f)
+    (for [e @repo
+                 :let [f (filter #(match-class? classname %) (:classes e))]]
+             f))))
 
 (defn create-cache []
   (for [path (filter #(.endsWith % ".jar") boot-classpath)]

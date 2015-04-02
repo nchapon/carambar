@@ -48,7 +48,9 @@
                     (add-entry {:artifactid "bar.jar" :classes ["com.bar.Bar" "com.bar.Buzz"]}))
            )]
   (fact "Find class by name"
-    (find-class "Baz") => ["com.foo.Baz"]))
+    (find-class "Baz") => ["com.foo.Baz"]
+    (find-class "Ba") => ["com.foo.Bar" "com.foo.Baz" "com.bar.Bar"]
+    ))
 
 (facts "Filter cache entry by classname"
   (filter-entry {:artifactid "foo.jar" :classes ["com.foo.Bar" "com.foo.Baz"]} "Baz") => ["com.foo.Baz"]
