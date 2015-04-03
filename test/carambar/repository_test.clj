@@ -5,7 +5,7 @@
   (:import [java.util.zip ZipEntry ZipOutputStream]))
 
 
-(fact "Add entry"
+(fact "Add an entry in repo."
   (add-entry {:artifactid "/path/test.jar" :classes []}) => (contains {:artifactid "/path/test.jar" :classes []}))
 
 (fact "Convert filename to javaclas."
@@ -39,7 +39,7 @@
     (fact "Should have two classes when Jar has two files"
       (parse "/tmp/foo.jar") => {:artifactid "/tmp/foo.jar" :classes ["Foo" "foo.Bar"]})
     (fact "Cache should have two entries"
-      (count (create-cache)) => 2)))
+      (count (create-repo)) => 2)))
 
 
 (with-state-changes
@@ -53,22 +53,21 @@
     (find-class "Ba") => ["com.foo.Bar" "com.foo.Baz" "com.bar.Bar"]))
 
 
-
 (with-state-changes
   [(before :facts (do
                     (reset! repo [])
                     (add-entry {:artifactid "foo.jar" :classes ["com.foo.Bar" "com.foo.Baz"]})
                     (add-entry {:artifactid "bar.jar" :classes ["com.bar.Kix" "com.bar.Baz"]})))]
   (facts "Filter repository by predicate"
-    (filter-repo-by :classes #(match-class-exactly? "Baz" %)) => ["com.foo.Baz" "com.bar.Baz"]
-    (filter-repo-by :classes #(match-class? "Ba" %)) => ["com.foo.Bar" "com.foo.Baz" "com.bar.Baz"]))
+    (filter-repo-by :classes #(has-name? "Baz" %)) => ["com.foo.Baz" "com.bar.Baz"]
+    (filter-repo-by :classes #(name-starts-with? "Ba" %)) => ["com.foo.Bar" "com.foo.Baz" "com.bar.Baz"]))
 
 (facts "Match class name starts with."
-  (match-class? "Baz" "com.foo.Baz") => false
-  (match-class? "Baz" "com.foo.BazBar") => true
-  (match-class? "Baz" "com.foo.FooBaz") => false)
+  (name-starts-with? "Baz" "com.foo.Baz") => nil
+  (name-starts-with? "Baz" "com.foo.BazBar") => "com.foo.BazBar"
+  (name-starts-with? "Baz" "com.foo.FooBaz") => nil)
 
 (facts "Match class name exactly."
-  (match-class-exactly? "Baz" "com.foo.Baz") => true
-  (match-class-exactly? "Baz" "com.foo.BazBar") => false
-  (match-class-exactly? "Baz" "com.foo.FooBaz") => false)
+  (has-name? "Baz" "com.foo.Baz") => "com.foo.Baz"
+  (has-name? "Baz" "com.foo.BazBar") => nil
+  (has-name? "Baz" "com.foo.FooBaz") => nil)

@@ -34,17 +34,13 @@
      :classes (map #(filename->javaclass (.getName %)) (entries z))}))
 
 
-(defn match-class-exactly?
+(defn has-name?
   [re s]
-  (if-not (empty? (re-find (re-pattern (str ".*\\." re "$")) s))
-    true
-    false))
+  (re-matches (re-pattern (str ".*\\." re "$")) s))
 
-(defn match-class?
+(defn name-starts-with?
   [re s]
-  (if-not (empty? (re-find (re-pattern (str ".*\\." re ".+")) s))
-    true
-    false))
+  (re-matches (re-pattern (str ".*\\." re ".+")) s))
 
 (defn filter-repo-by
   "Filter repository by KEY-FN and PRED"
@@ -58,10 +54,10 @@
   "Find CLASSNAME from repo"
   [name]
   (concat
-   (filter-repo-by :classes #(match-class-exactly? name %))
-   (filter-repo-by :classes #(match-class? name %))))
+   (filter-repo-by :classes (partial has-name? name))
+   (filter-repo-by :classes (partial name-starts-with? name))))
 
-(defn create-cache []
+(defn create-repo []
   (for [path (filter #(.endsWith % ".jar") boot-classpath)]
     (try (add-entry (parse path))
          (catch Exception e path))))

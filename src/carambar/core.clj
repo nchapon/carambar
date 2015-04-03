@@ -8,7 +8,7 @@
 
 (defroutes app-routes
   (GET "/" [] (response {:carambar "OK"}))
-  (GET "/index" [] (response (repository/create-cache)))
+  (GET "/index" [] (response (repository/create-repo)))
   (GET "/classes" [search] (response {:classes (repository/find-class search)})))
 
 (def app (-> (handler/api app-routes)
