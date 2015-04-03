@@ -46,23 +46,20 @@
     true
     false))
 
-(defn filter-entry
-  "Filter entry by CLASS"
-  [entry s]
-  (filter #(re-matches (re-pattern (str ".*\\." s "$")) %)  (:classes entry)))
-
+(defn filter-repo-by
+  "Filter repository by KEY-FN and PRED"
+  [key-fn pred]
+  (reduce (fn [classes x]
+            (into classes (filter pred (key-fn x))))
+          []
+          @repo))
 
 (defn find-class
   "Find CLASSNAME from repo"
-  [classname]
-  (flatten
-   (concat
-    (for [e @repo
-                 :let [f (filter #(match-class-exactly? classname %) (:classes e))]]
-      f)
-    (for [e @repo
-                 :let [f (filter #(match-class? classname %) (:classes e))]]
-             f))))
+  [name]
+  (concat
+   (filter-repo-by :classes #(match-class-exactly? name %))
+   (filter-repo-by :classes #(match-class? name %))))
 
 (defn create-cache []
   (for [path (filter #(.endsWith % ".jar") boot-classpath)]

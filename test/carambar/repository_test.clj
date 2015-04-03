@@ -41,21 +41,27 @@
     (fact "Cache should have two entries"
       (count (create-cache)) => 2)))
 
+
 (with-state-changes
   [(before :facts (do
                     (reset! repo [])
                     (add-entry {:artifactid "foo.jar" :classes ["com.foo.Bar" "com.foo.Baz"]})
                     (add-entry {:artifactid "bar.jar" :classes ["com.bar.Bar" "com.bar.Buzz"]}))
            )]
-  (fact "Find class by name"
+  (fact "Find class by name should returns classes starts with name"
     (find-class "Baz") => ["com.foo.Baz"]
-    (find-class "Ba") => ["com.foo.Bar" "com.foo.Baz" "com.bar.Bar"]
-    ))
+    (find-class "Ba") => ["com.foo.Bar" "com.foo.Baz" "com.bar.Bar"]))
 
-(facts "Filter cache entry by classname"
-  (filter-entry {:artifactid "foo.jar" :classes ["com.foo.Bar" "com.foo.Baz"]} "Baz") => ["com.foo.Baz"]
-  (filter-entry {:artifactid "foo.jar" :classes ["com.foo.Bar" "com.foo.Baz"]} "ZZ") => [])
 
+
+(with-state-changes
+  [(before :facts (do
+                    (reset! repo [])
+                    (add-entry {:artifactid "foo.jar" :classes ["com.foo.Bar" "com.foo.Baz"]})
+                    (add-entry {:artifactid "bar.jar" :classes ["com.bar.Kix" "com.bar.Baz"]})))]
+  (facts "Filter repository by predicate"
+    (filter-repo-by :classes #(match-class-exactly? "Baz" %)) => ["com.foo.Baz" "com.bar.Baz"]
+    (filter-repo-by :classes #(match-class? "Ba" %)) => ["com.foo.Bar" "com.foo.Baz" "com.bar.Baz"]))
 
 (facts "Match class name starts with."
   (match-class? "Baz" "com.foo.Baz") => false
