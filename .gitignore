@@ -6,3 +6,4 @@
 /.lein-*
 /.nrepl-port
 /test_projects/simple/target/
+/test_projects/simple/effective-pom.xml
