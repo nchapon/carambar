@@ -43,4 +43,12 @@
   (dependencies pom-xml) =>  [{:artifactId "junit", :groupId "junit", :version "4.11"} {:artifactId "slf4j-api", :groupId "org.slf4j", :version "1.7.5"}])
 
 (fact "Load from pom.xml"
-  (process-pom "test_projects/simple/pom.xml") =not=> nil?)
+  (process-pom "test_projects/simple/effective-pom.xml")
+  => {:project "simple"
+      :dependencies
+      [{:artifactId "junit", :groupId "junit", :version "4.11"}
+       {:artifactId "mockito-core", :groupId "org.mockito", :version "1.10.8"}
+       {:artifactId "fest-assert", :groupId "org.easytesting", :version "1.4"}
+       {:artifactId "slf4j-api", :groupId "org.slf4j", :version "1.7.8"}
+       {:artifactId "logback-classic", :groupId "ch.qos.logback", :version "1.1.2"}
+       {:artifactId "logback-core", :groupId "ch.qos.logback", :version "1.1.2"}]})

@@ -23,4 +23,6 @@
   "Process maven POM xml file"
   [pom]
   (let [xz (zip/xml-zip (xml/parse pom))]
-    {:dependencies (dependencies xz)}))
+    (merge
+     {:project (zx/xml1-> xz :artifactId zx/text)}
+     {:dependencies (dependencies xz)})))
