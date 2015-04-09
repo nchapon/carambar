@@ -5,4 +5,4 @@
 *.class
 /.lein-*
 /.nrepl-port
-/test/resources/projects/simple/target/
+/test_projects/simple/target/

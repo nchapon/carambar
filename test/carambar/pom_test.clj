@@ -43,4 +43,4 @@
   (dependencies pom-xml) =>  [{:artifactId "junit", :groupId "junit", :version "4.11"} {:artifactId "slf4j-api", :groupId "org.slf4j", :version "1.7.5"}])
 
 (fact "Load from pom.xml"
-  (process-pom "test/resources/projects/simple/pom.xml") =not=> nil?)
+  (process-pom "test_projects/simple/pom.xml") =not=> nil?)
