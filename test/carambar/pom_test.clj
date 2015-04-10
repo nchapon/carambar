@@ -52,3 +52,6 @@
        {:artifactId "slf4j-api", :groupId "org.slf4j", :version "1.7.8"}
        {:artifactId "logback-classic", :groupId "ch.qos.logback", :version "1.1.2"}
        {:artifactId "logback-core", :groupId "ch.qos.logback", :version "1.1.2"}]})
+
+(fact "Mvn local repo should be initialized."
+  mvn-local-repo => "/home/nchapon/opt/m2_repo")
