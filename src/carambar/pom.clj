@@ -5,21 +5,6 @@
             [clojure.data.zip.xml :as zx]))
 
 
-
-
-
-(defn mvn-settings
-  "doc-string"
-  [settings]
-  (let [xz (zip/xml-zip (xml/parse settings))]
-    (zx/xml1-> xz :localRepository zx/text)))
-
-(def mvn-local-repo
-  (let [mvn-ret (sh/sh "mvn" "help:effective-settings" "-Doutput=mvn-settings.xml")]
-                      (if (= 0 (:exit mvn-ret))
-                        (mvn-settings "mvn-settings.xml")
-                        (:out mvn-ret))))
-
 (defn attr-map
   "doc-string"
   [loc ks]
@@ -43,20 +28,37 @@
      {:project (zx/xml1-> xz :artifactId zx/text)}
      {:dependencies (dependencies xz)})))
 
-
-
-
-
-(defn mvn-effective-pom
-  [project-dir]
-  (let [mvn-ret (sh/sh "mvn" "help:effective-pom" "-f" (str project-dir "/pom.xml")  "-Doutput=effective-pom.xml")]
+(defn mvn
+  "Runs mvn command"
+  [goal & options]
+  (let [mvn-ret (apply sh/sh "mvn" goal options)]
     (if-not (= 0 (:exit mvn-ret))
       (throw (Exception. (:out mvn-ret))))))
 
+(defn mvn-settings
+  "doc-string"
+  [settings]
+  (let [xz (zip/xml-zip (xml/parse settings))]
+    (zx/xml1-> xz :localRepository zx/text)))
 
-(defn process-project
+(defn mvn-help:effective-settings
+  "Maven help:effective settings command."
+  []
+  (mvn "help:effective-settings" "-Doutput=mvn-settings.xml"))
+
+(def mvn-local-repo
+  (do (mvn-help:effective-settings)
+      (mvn-settings "mvn-settings.xml")))
+
+(defn mvn-help:effective-pom
+  [project-dir]
+  (mvn "help:effective-pom"
+       "-f" (format "%s/pom.xml" project-dir)
+       "-Doutput=effective-pom.xml"))
+
+(defn read-pom
   "Process maven project from DIR"
   [project-dir]
   (do
-    (mvn-effective-pom project-dir)
-    (project-info (str project-dir "/effective-pom.xml"))))
+    (mvn-help:effective-pom project-dir)
+    (project-info (format "%s/effective-pom.xml" project-dir))))

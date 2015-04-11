@@ -39,11 +39,11 @@
     xml/parse
     zip/xml-zip))
 
-(fact "Load dependencies"
+(fact "Read dependencies"
   (dependencies pom-xml) =>  [{:artifactId "junit", :groupId "junit", :version "4.11"} {:artifactId "slf4j-api", :groupId "org.slf4j", :version "1.7.5"}])
 
-(fact "Load from pom.xml"
-  (process-project "test_projects/simple")
+(fact "Read pom file."
+  (read-pom "test_projects/simple")
   => {:project "simple"
       :dependencies
       [{:artifactId "junit", :groupId "junit", :version "4.11"}
