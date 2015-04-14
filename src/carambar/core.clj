@@ -1,6 +1,7 @@
 (ns carambar.core
   (:use ring.util.response)
   (:require [carambar.repository :as repository]
+            [carambar.pom :as pom]
             [compojure.handler :as handler]
             [compojure.route :as route]
             [compojure.core :refer [GET defroutes]]
@@ -15,7 +16,7 @@
 (defn init
   "Init carambar settings"
   []
-  (log/info "Init carambar"))
+  (log/info "Init carambar : " pom/mvn-local-repo))
 
 
 (def app (-> (handler/api app-routes)
