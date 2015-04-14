@@ -1,8 +1,8 @@
-(ns carambar.pom-test
+(ns carambar.mvn-test
   (:require [midje.sweet :refer :all]
             [clojure.zip :as zip]
             [clojure.xml :as xml]
-            [carambar.pom :refer :all]))
+            [carambar.mvn :refer :all]))
 
 
 (def content "<project>
@@ -54,4 +54,4 @@
        {:artifactId "logback-core", :groupId "ch.qos.logback", :version "1.1.2"}]})
 
 (fact "Mvn local repo should be initialized."
-  mvn-local-repo => "/home/nchapon/opt/m2_repo")
+  local-repo => "/home/nchapon/opt/m2_repo")

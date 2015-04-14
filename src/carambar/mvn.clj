@@ -1,4 +1,4 @@
-(ns carambar.pom
+(ns carambar.mvn
   (:require [clojure.zip :as zip]
             [clojure.xml :as xml]
             [clojure.java.shell :as sh]
@@ -46,7 +46,7 @@
   []
   (mvn "help:effective-settings" "-Doutput=mvn-settings.xml"))
 
-(def mvn-local-repo
+(def local-repo
   (do (mvn-help:effective-settings)
       (mvn-settings "mvn-settings.xml")))
 
