@@ -21,7 +21,7 @@
   [zipfile]
   (filter #(class-file? (.getName %)) (enumeration-seq (.entries zipfile))))
 
-(defn add-entry
+(defn add-entry!
   "Add repo entry"
   [entry]
   (swap! repo conj entry))
@@ -58,6 +58,6 @@
    (filter-repo-by :classes (partial name-starts-with? name))))
 
 (defn create-repo []
-  (for [path (filter #(.endsWith % ".jar") boot-classpath)]
-    (try (add-entry (parse path))
+  (doseq [path (filter #(.endsWith % ".jar") boot-classpath)]
+    (try (add-entry! (parse path))
          (catch Exception e path))))

@@ -36,10 +36,12 @@
                       (jarfile "foo.jar" ["Foo.class" "foo/Bar.class"])
                       (jarfile "bar.jar" ["bar/Foo.class" "bar/Baz.class"])
                       (reset! repo [])))]
-    (fact "Should have two classes when Jar has two files"
-      (parse "/tmp/foo.jar") => {:artifactid "/tmp/foo.jar" :classes ["Foo" "foo.Bar"]})
-    (fact "Cache should have two entries"
-      (count (create-repo)) => 2)))
+    (fact "Foo.jar should have two classes when Jar has two files"
+      (parse "/tmp/foo.jar") => {:artifactid "/tmp/foo.jar" :classes ["Foo" "foo.Bar"]}
+      (with-state-changes
+        [(before :facts (create-repo))]
+        (fact "Cache should have two entries"
+         (count @repo) => 2)))))
 
 
 (with-state-changes
