@@ -56,6 +56,16 @@
        "-f" (format "%s/pom.xml" project-dir)
        "-Doutput=effective-pom.xml"))
 
+(defn expand-dependency-path
+  "Expand dependency path with maven repo path. "
+  [{group :groupId artifact :artifactId version :version}]
+  (format "%s/%s/%s/%s/%s-%s.jar"
+          local-repo
+          (clojure.string/replace group "." "/")
+          artifact version
+          artifact version))
+
+
 (defn read-pom
   "Process maven project from DIR"
   [project-dir]

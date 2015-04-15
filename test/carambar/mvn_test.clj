@@ -55,3 +55,10 @@
 
 (fact "Mvn local repo should be initialized."
   local-repo => "/home/nchapon/opt/m2_repo")
+
+(with-redefs [local-repo "/m2_repo"]
+  (fact "Should expand dependency path."
+    (expand-dependency-path
+     {:artifactId "mockito-core",
+      :groupId "org.mockito",
+      :version "1.10.8"}) => "/m2_repo/org/mockito/mockito-core/1.10.8/mockito-core-1.10.8.jar"))
