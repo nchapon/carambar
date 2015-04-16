@@ -72,3 +72,8 @@
   (do
     (mvn-help:effective-pom project-dir)
     (project-info (format "%s/effective-pom.xml" project-dir))))
+
+(defn dependencies-path
+  "Provide dependencies path"
+  []
+  (map expand-dependency-path (:dependencies (read-pom "test_projects/simple"))))

@@ -1,4 +1,5 @@
-(ns carambar.repository)
+(ns carambar.repository
+  (:require [carambar.mvn :as mvn]))
 
 
 (def repo (atom []))
@@ -57,7 +58,14 @@
    (filter-repo-by :classes (partial has-name? name))
    (filter-repo-by :classes (partial name-starts-with? name))))
 
-(defn create-repo []
-  (doseq [path (filter #(.endsWith % ".jar") boot-classpath)]
+
+(defn create-repo [cp]
+  (doseq [path (filter #(.endsWith % ".jar") cp)]
     (try (add-entry! (parse path))
          (catch Exception e path))))
+
+(defn index-classpath
+  []
+  (create-repo (into
+                boot-classpath
+                (mvn/dependencies-path))))

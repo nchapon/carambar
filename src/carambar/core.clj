@@ -10,7 +10,7 @@
 
 (defroutes app-routes
   (GET "/" [] (response {:carambar "OK"}))
-  (GET "/index" [] (response (repository/create-repo)))
+  (GET "/index" [] (response (repository/index-classpath)))
   (GET "/classes" [search] (response {:classes (repository/find-class search)})))
 
 (defn init
