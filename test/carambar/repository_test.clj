@@ -6,7 +6,7 @@
 
 
 (fact "Add an entry in repo."
-  (add-entry {:artifactid "/path/test.jar" :classes []}) => (contains {:artifactid "/path/test.jar" :classes []}))
+  (add-entry! {:artifactid "/path/test.jar" :classes []}) => (contains {:artifactid "/path/test.jar" :classes []}))
 
 (fact "Convert filename to javaclas."
   (filename->javaclass "a/b/c/MyClass.class") => "a.b.c.MyClass")
@@ -47,8 +47,8 @@
 (with-state-changes
   [(before :facts (do
                     (reset! repo [])
-                    (add-entry {:artifactid "foo.jar" :classes ["com.foo.Bar" "com.foo.Baz"]})
-                    (add-entry {:artifactid "bar.jar" :classes ["com.bar.Bar" "com.bar.Buzz"]}))
+                    (add-entry! {:artifactid "foo.jar" :classes ["com.foo.Bar" "com.foo.Baz"]})
+                    (add-entry! {:artifactid "bar.jar" :classes ["com.bar.Bar" "com.bar.Buzz"]}))
            )]
   (fact "Find class by name should returns classes starts with name"
     (find-class "Baz") => ["com.foo.Baz"]
@@ -58,8 +58,8 @@
 (with-state-changes
   [(before :facts (do
                     (reset! repo [])
-                    (add-entry {:artifactid "foo.jar" :classes ["com.foo.Bar" "com.foo.Baz"]})
-                    (add-entry {:artifactid "bar.jar" :classes ["com.bar.Kix" "com.bar.Baz"]})))]
+                    (add-entry! {:artifactid "foo.jar" :classes ["com.foo.Bar" "com.foo.Baz"]})
+                    (add-entry! {:artifactid "bar.jar" :classes ["com.bar.Kix" "com.bar.Baz"]})))]
   (facts "Filter repository by predicate"
     (filter-repo-by :classes #(has-name? "Baz" %)) => ["com.foo.Baz" "com.bar.Baz"]
     (filter-repo-by :classes #(name-starts-with? "Ba" %)) => ["com.foo.Bar" "com.foo.Baz" "com.bar.Baz"]))
