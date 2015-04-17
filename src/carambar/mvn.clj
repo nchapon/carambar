@@ -75,5 +75,5 @@
 
 (defn dependencies-path
   "Provide dependencies path"
-  []
-  (map expand-dependency-path (:dependencies (read-pom "test_projects/simple"))))
+  [deps]
+  (map expand-dependency-path deps))

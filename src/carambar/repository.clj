@@ -1,6 +1,10 @@
 (ns carambar.repository
   (:require [carambar.mvn :as mvn]))
 
+(def defaults
+  {:project "project-name"
+   :dependencies []
+   :classpath []})
 
 (def repo (atom []))
 
@@ -64,8 +68,17 @@
     (try (add-entry! (parse path))
          (catch Exception e path))))
 
-(defn index-classpath
+(defn create-project
   []
   (create-repo (into
                 boot-classpath
                 (mvn/dependencies-path))))
+
+(defn create-project
+  "Add project from PATH"
+  [path]
+  (let [pom (mvn/read-pom path)]
+    (assoc defaults
+           :project (:project pom)
+           :dependencies (:dependencies pom)
+           :classpath (mvn/dependencies-path (:dependencies pom)))))

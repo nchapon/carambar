@@ -1,6 +1,7 @@
 (ns carambar.repository-test
   (:require [midje.sweet :refer :all]
             [carambar.repository :refer :all]
+            [carambar.mvn :as mvn]
             [clojure.java.io :as io])
   (:import [java.util.zip ZipEntry ZipOutputStream]))
 
@@ -39,7 +40,7 @@
     (parse "/tmp/foo.jar") => {:artifactid "/tmp/foo.jar" :classes ["Foo" "foo.Bar"]}
     (with-state-changes
       [(before :facts (create-repo ["/tmp/foo.jar" "/tmp/bar.jar"]))]
-      (fact "Cache should have two entries"
+      (fact "Classpath should have two entries"
         (count @repo) => 2))))
 
 
@@ -72,3 +73,14 @@
   (has-name? "Baz" "com.foo.Baz") => "com.foo.Baz"
   (has-name? "Baz" "com.foo.BazBar") => nil
   (has-name? "Baz" "com.foo.FooBaz") => nil)
+
+
+(fact "Create new project"
+  (create-project "/path/toproject/simple") => {:project "simple"
+                                             :dependencies [{:artifactId "aid", :groupId "gid", :version "1.0"}]
+                                                :classpath ["/m2_repo/gid/aid/1.0/aid-1.0.jar"]}
+  (provided
+    (mvn/read-pom "/path/toproject/simple") => {:project "simple"
+                                                :dependencies [{:artifactId "aid", :groupId "gid", :version "1.0"}] }
+    (mvn/dependencies-path [{:artifactId "aid", :groupId "gid", :version "1.0"}]) => ["/m2_repo/gid/aid/1.0/aid-1.0.jar"]
+    ))
