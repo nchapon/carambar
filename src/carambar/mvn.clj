@@ -28,11 +28,26 @@
      {:project (zx/xml1-> xz :artifactId zx/text)}
      {:dependencies (dependencies xz)})))
 
+
+(defn mvn-output
+  "doc-string"
+  [output]
+  (if (not-empty output)
+    (format "-Doutput=%s" output)))
+
+(defn mvn-pom
+  "doc-string"
+  [pom]
+  (if (not-empty pom)
+    ["-f" pom]))
+
+
 (defn mvn
   "Runs mvn command"
-  [goal & options]
-  (let [mvn-ret (apply sh/sh "mvn" goal options)]
-    (if-not (= 0 (:exit mvn-ret))
+  [{goal :goal pom :pom output :output}]
+  (let [mvn-ret (apply sh/sh "mvn" goal (mvn-output output) (mvn-pom pom))]
+    (if (= 0 (:exit mvn-ret))
+       output
       (throw (Exception. (:out mvn-ret))))))
 
 (defn mvn-settings
@@ -41,20 +56,27 @@
   (let [xz (zip/xml-zip (xml/parse settings))]
     (zx/xml1-> xz :localRepository zx/text)))
 
+(def effective-settings-path (format "%s/mvn-settings.xml" (System/getProperty "java.io.tmpdir")))
+
+(def effective-pom-path
+  (format "%s/effective-pom.xml" (System/getProperty "java.io.tmpdir")))
+
+
 (defn mvn-help:effective-settings
   "Maven help:effective settings command."
   []
-  (mvn "help:effective-settings" "-Doutput=mvn-settings.xml"))
+  (mvn {:goal "help:effective-settings"
+        :output effective-settings-path}))
 
 (def local-repo
-  (do (mvn-help:effective-settings)
-      (mvn-settings "mvn-settings.xml")))
+  (-> (mvn-help:effective-settings)
+      (mvn-settings)))
 
 (defn mvn-help:effective-pom
   [project-dir]
-  (mvn "help:effective-pom"
-       "-f" (format "%s/pom.xml" project-dir)
-       "-Doutput=effective-pom.xml"))
+  (mvn {:goal "help:effective-pom"
+        :pom (format "%s/pom.xml" project-dir)
+        :output effective-pom-path}))
 
 (defn expand-dependency-path
   "Expand dependency path with maven repo path. "
@@ -69,9 +91,9 @@
 (defn read-pom
   "Process maven project from DIR"
   [project-dir]
-  (do
-    (mvn-help:effective-pom project-dir)
-    (project-info (format "%s/effective-pom.xml" project-dir))))
+  (->
+     (mvn-help:effective-pom project-dir)
+     (project-info)))
 
 (defn dependencies-path
   "Provide dependencies path"
