@@ -68,13 +68,7 @@
     (try (add-entry! (parse path))
          (catch Exception e path))))
 
-(defn create-project
-  []
-  (create-repo (into
-                boot-classpath
-                (mvn/dependencies-path))))
-
-(defn create-project
+(defn create-project-info
   "Add project from PATH"
   [path]
   (let [pom (mvn/read-pom path)]
@@ -82,3 +76,10 @@
            :project (:project pom)
            :dependencies (:dependencies pom)
            :classpath (mvn/dependencies-path (:dependencies pom)))))
+
+(defn add-project
+  "Add project from path"
+  [path]
+  (create-repo (into
+                boot-classpath
+                (:classpath (create-project-info path)))))

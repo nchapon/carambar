@@ -75,8 +75,8 @@
   (has-name? "Baz" "com.foo.FooBaz") => nil)
 
 
-(fact "Create new project"
-  (create-project "/path/toproject/simple") => {:project "simple"
+(fact "Create project info"
+  (create-project-info "/path/toproject/simple") => {:project "simple"
                                              :dependencies [{:artifactId "aid", :groupId "gid", :version "1.0"}]
                                                 :classpath ["/m2_repo/gid/aid/1.0/aid-1.0.jar"]}
   (provided
