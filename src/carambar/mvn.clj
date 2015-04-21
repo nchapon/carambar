@@ -20,15 +20,6 @@
   [pom-zip]
   (zx/xml-> pom-zip :dependencies :dependency dependency))
 
-(defn project-info
-  "Creates project information from POM file"
-  [pom]
-  (let [xz (zip/xml-zip (xml/parse pom))]
-    (merge
-     {:project (zx/xml1-> xz :artifactId zx/text)}
-     {:dependencies (dependencies xz)})))
-
-
 (defn mvn-output
   "doc-string"
   [output]
@@ -87,15 +78,17 @@
           artifact version
           artifact version))
 
+(defn project-info
+  "Creates project information from POM file"
+  [pom]
+  (let [xz (zip/xml-zip (xml/parse pom))]
+    (merge
+     {:project (zx/xml1-> xz :artifactId zx/text)}
+     {:classpath (map expand-dependency-path (dependencies xz))})))
 
-(defn read-pom
+(defn read-project-info
   "Process maven project from DIR"
   [project-dir]
   (->
      (mvn-help:effective-pom project-dir)
      (project-info)))
-
-(defn dependencies-path
-  "Provide dependencies path"
-  [deps]
-  (map expand-dependency-path deps))

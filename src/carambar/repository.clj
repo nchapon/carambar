@@ -1,11 +1,6 @@
 (ns carambar.repository
   (:require [carambar.mvn :as mvn]))
 
-(def defaults
-  {:project "project-name"
-   :dependencies []
-   :classpath []})
-
 (def repo (atom []))
 
 (def boot-classpath (filter #(re-matches #".*lib/rt.jar" %) (clojure.string/split (System/getProperty "sun.boot.class.path") #":")))
@@ -68,18 +63,15 @@
     (try (add-entry! (parse path))
          (catch Exception e path))))
 
-(defn create-project-info
+(defn make-project
   "Add project from PATH"
   [path]
-  (let [pom (mvn/read-pom path)]
-    (assoc defaults
-           :project (:project pom)
-           :dependencies (:dependencies pom)
-           :classpath (mvn/dependencies-path (:dependencies pom)))))
+  (let [pi (mvn/read-project-info path)]
+    pi))
 
 (defn add-project
   "Add project from path"
   [path]
   (create-repo (into
                 boot-classpath
-                (:classpath (create-project-info path)))))
+                (:classpath (make-project path)))))

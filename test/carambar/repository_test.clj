@@ -75,12 +75,9 @@
   (has-name? "Baz" "com.foo.FooBaz") => nil)
 
 
-(fact "Create project info"
-  (create-project-info "/path/toproject/simple") => {:project "simple"
-                                             :dependencies [{:artifactId "aid", :groupId "gid", :version "1.0"}]
+(fact "Make project"
+  (make-project "/path/toproject/simple") => {:project "simple"
                                                 :classpath ["/m2_repo/gid/aid/1.0/aid-1.0.jar"]}
   (provided
-    (mvn/read-pom "/path/toproject/simple") => {:project "simple"
-                                                :dependencies [{:artifactId "aid", :groupId "gid", :version "1.0"}] }
-    (mvn/dependencies-path [{:artifactId "aid", :groupId "gid", :version "1.0"}]) => ["/m2_repo/gid/aid/1.0/aid-1.0.jar"]
-    ))
+    (mvn/read-project-info "/path/toproject/simple") => {:project "simple"
+                                                :classpath ["/m2_repo/gid/aid/1.0/aid-1.0.jar"]}))

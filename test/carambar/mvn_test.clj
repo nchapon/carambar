@@ -42,17 +42,6 @@
 (fact "Read dependencies"
   (dependencies pom-xml) =>  [{:artifactId "junit", :groupId "junit", :version "4.11"} {:artifactId "slf4j-api", :groupId "org.slf4j", :version "1.7.5"}])
 
-(fact "Read pom file."
-  (read-pom "test_projects/simple")
-  => {:project "simple"
-      :dependencies
-      [{:artifactId "junit", :groupId "junit", :version "4.11"}
-       {:artifactId "mockito-core", :groupId "org.mockito", :version "1.10.8"}
-       {:artifactId "fest-assert", :groupId "org.easytesting", :version "1.4"}
-       {:artifactId "slf4j-api", :groupId "org.slf4j", :version "1.7.8"}
-       {:artifactId "logback-classic", :groupId "ch.qos.logback", :version "1.1.2"}
-       {:artifactId "logback-core", :groupId "ch.qos.logback", :version "1.1.2"}]})
-
 (fact "Mvn local repo should be initialized."
   local-repo => "/home/nchapon/opt/m2_repo")
 
@@ -61,4 +50,14 @@
     (expand-dependency-path
      {:artifactId "mockito-core",
       :groupId "org.mockito",
-      :version "1.10.8"}) => "/m2_repo/org/mockito/mockito-core/1.10.8/mockito-core-1.10.8.jar"))
+      :version "1.10.8"}) => "/m2_repo/org/mockito/mockito-core/1.10.8/mockito-core-1.10.8.jar")
+  (fact "Read pom file."
+  (read-project-info "test_projects/simple")
+  => {:project "simple"
+      :classpath
+      ["/m2_repo/junit/junit/4.11/junit-4.11.jar"
+       "/m2_repo/org/mockito/mockito-core/1.10.8/mockito-core-1.10.8.jar"
+       "/m2_repo/org/easytesting/fest-assert/1.4/fest-assert-1.4.jar"
+       "/m2_repo/org/slf4j/slf4j-api/1.7.8/slf4j-api-1.7.8.jar"
+       "/m2_repo/ch/qos/logback/logback-classic/1.1.2/logback-classic-1.1.2.jar"
+       "/m2_repo/ch/qos/logback/logback-core/1.1.2/logback-core-1.1.2.jar"]}))
