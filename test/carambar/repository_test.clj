@@ -6,9 +6,6 @@
   (:import [java.util.zip ZipEntry ZipOutputStream]))
 
 
-(fact "Add an entry in repo."
-  (add-entry! {:artifactid "/path/test.jar" :classes []}) => (contains {:artifactid "/path/test.jar" :classes []}))
-
 (fact "Convert filename to javaclas."
   (filename->javaclass "a/b/c/MyClass.class") => "a.b.c.MyClass")
 
@@ -34,8 +31,7 @@
 (with-state-changes
   [(before :facts (do
                     (jarfile "foo.jar" ["Foo.class" "foo/Bar.class"])
-                    (jarfile "bar.jar" ["bar/Foo.class" "bar/Baz.class"])
-                    (reset! repo [])))]
+                    (jarfile "bar.jar" ["bar/Foo.class" "bar/Baz.class"])))]
   (fact "Foo.jar should have two classes when Jar has two files"
     (parse "/tmp/foo.jar") => {:artifactid "/tmp/foo.jar" :classes ["Foo" "foo.Bar"]}
   (fact "Classpath should have two entries"
@@ -44,23 +40,14 @@
 
 (with-state-changes
   [(before :facts (do
-                    (reset! repo [])
-                    (add-entry! {:artifactid "foo.jar" :classes ["com.foo.Bar" "com.foo.Baz"]})
-                    (add-entry! {:artifactid "bar.jar" :classes ["com.bar.Bar" "com.bar.Buzz"]}))
-           )]
-  (fact "Find class by name should returns classes starts with name"
-    (find-class "Baz") => ["com.foo.Baz"]
-    (find-class "Ba") => ["com.foo.Bar" "com.foo.Baz" "com.bar.Bar"]))
-
-
-(with-state-changes
-  [(before :facts (do
-                    (reset! repo [])
-                    (add-entry! {:artifactid "foo.jar" :classes ["com.foo.Bar" "com.foo.Baz"]})
-                    (add-entry! {:artifactid "bar.jar" :classes ["com.bar.Kix" "com.bar.Baz"]})))]
+                    (reset! projects [])
+                    (add-project! {:project "simple"
+                                   :classes [{:artifactid "foo.jar" :classes ["com.foo.Bar" "com.foo.Baz"]}
+                                             {:artifactid "bar.jar" :classes ["com.bar.Kix" "com.bar.Baz"]}]})
+                    ))]
   (facts "Filter repository by predicate"
-    (filter-repo-by :classes #(has-name? "Baz" %)) => ["com.foo.Baz" "com.bar.Baz"]
-    (filter-repo-by :classes #(name-starts-with? "Ba" %)) => ["com.foo.Bar" "com.foo.Baz" "com.bar.Baz"]))
+    (find-class "simple" "Baz") => ["com.foo.Baz" "com.bar.Baz"]
+    (find-class "simple" "Ba") => ["com.foo.Bar" "com.foo.Baz" "com.bar.Baz"]))
 
 (facts "Match class name starts with."
   (name-starts-with? "Baz" "com.foo.Baz") => nil

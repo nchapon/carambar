@@ -1,7 +1,7 @@
 (ns carambar.repository
   (:require [carambar.mvn :as mvn]))
 
-(def repo (atom []))
+(def projects (atom []))
 
 (def boot-classpath (filter #(re-matches #".*lib/rt.jar" %) (clojure.string/split (System/getProperty "sun.boot.class.path") #":")))
 
@@ -21,10 +21,10 @@
   [zipfile]
   (filter #(class-file? (.getName %)) (enumeration-seq (.entries zipfile))))
 
-(defn add-entry!
-  "Add repo entry"
-  [entry]
-  (swap! repo conj entry))
+(defn add-project!
+  "Add project"
+  [p]
+  (swap! projects conj p))
 
 (defn parse
   "doc-string"
@@ -42,20 +42,28 @@
   [re s]
   (re-matches (re-pattern (str ".*\\." re ".+")) s))
 
-(defn filter-repo-by
-  "Filter repository by KEY-FN and PRED"
-  [key-fn pred]
+(defn filter-by
+  "Filter COLL by KEY-FN and PRED"
+  [key-fn pred coll]
   (reduce (fn [classes x]
             (into classes (filter pred (key-fn x))))
           []
-          @repo))
+          coll))
+
+(defn has-project-name?
+  "has P"
+  [name s]
+  (= name s))
+
 
 (defn find-class
   "Find CLASSNAME from repo"
-  [name]
-  (concat
-   (filter-repo-by :classes (partial has-name? name))
-   (filter-repo-by :classes (partial name-starts-with? name))))
+  [p-name c-name]
+  (let [project (filter-by :project (partial has-project-name? p-name) @projects)
+        p-classes (:classes (nth @projects 0))] ;; hack
+    (concat
+     (filter-by :classes (partial has-name? c-name) p-classes)
+     (filter-by :classes (partial name-starts-with? c-name) p-classes))))
 
 
 (defn add-classes [cp]
@@ -73,6 +81,6 @@
 (defn add-project
   "Add project from path"
   [path]
-  (add-classes (into
-                boot-classpath
-                (:classpath (make-project path)))))
+  (-> path
+      (make-project)
+      (add-project!)))
