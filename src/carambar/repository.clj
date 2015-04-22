@@ -58,20 +58,21 @@
    (filter-repo-by :classes (partial name-starts-with? name))))
 
 
-(defn create-repo [cp]
-  (doseq [path (filter #(.endsWith % ".jar") cp)]
-    (try (add-entry! (parse path))
-         (catch Exception e path))))
+(defn add-classes [cp]
+  (for [path (filter #(.endsWith % ".jar") cp)]
+    (try (parse path)
+       (catch Exception e path))))
 
 (defn make-project
   "Add project from PATH"
   [path]
-  (let [pi (mvn/read-project-info path)]
-    pi))
+  (let [pi (mvn/read-project-info path)
+        cp (:classpath pi)]
+    (assoc pi :classes (add-classes cp))))
 
 (defn add-project
   "Add project from path"
   [path]
-  (create-repo (into
+  (add-classes (into
                 boot-classpath
                 (:classpath (make-project path)))))
