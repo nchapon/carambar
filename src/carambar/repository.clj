@@ -45,22 +45,21 @@
 (defn filter-by
   "Filter COLL by KEY-FN and PRED"
   [key-fn pred coll]
-  (reduce (fn [classes x]
-            (into classes (filter pred (key-fn x))))
+  (reduce (fn [items i]
+            (into items (filter pred (key-fn i))))
           []
           coll))
 
 (defn has-project-name?
   "has P"
   [name s]
-  (= name s))
-
+  (= name (:project s)))
 
 (defn find-class
   "Find CLASSNAME from repo"
   [p-name c-name]
-  (let [project (filter-by :project (partial has-project-name? p-name) @projects)
-        p-classes (:classes (nth @projects 0))] ;; hack
+  (let [project (first (filter (partial has-project-name? p-name) @projects))
+        p-classes (:classes project)]
     (concat
      (filter-by :classes (partial has-name? c-name) p-classes)
      (filter-by :classes (partial name-starts-with? c-name) p-classes))))

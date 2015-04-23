@@ -11,7 +11,7 @@
 (defroutes app-routes
   (GET "/" [] (response {:carambar "OK"}))
   (GET "/projects" [] (response (repository/add-project "test_projects/simple")))
-  (GET "/projects/classes" [search] (response {:classes (repository/find-class search)})))
+  (GET "/projects/:name/classes" [name search] (response {:classes (repository/find-class name search)})))
 
 (defn init
   "Init carambar settings"

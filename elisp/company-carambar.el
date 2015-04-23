@@ -11,7 +11,7 @@
     "DOCSTRING"
   (interactive)
   (with-current-buffer
-      (url-retrieve-synchronously (format "http://localhost:3000/classes?search=%s" prefix))
+      (url-retrieve-synchronously (format "http://localhost:3000/projects/simple/classes?search=%s" prefix))
   (goto-char url-http-end-of-headers)
   (setq json-array-type 'vector
         json-object-type 'alist)
