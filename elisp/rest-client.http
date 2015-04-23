@@ -1,0 +1,20 @@
+# -*- restclient -*-
+# Uses REST Client mode...
+# C-c C-v runs the query in another buffer
+# C-c C-p: jump to the previous query
+# C-c C-n: jump to the previous query
+
+# Test Carambar
+GET http://localhost:3000/
+
+# Add project
+POST http://localhost:3000/projects
+Content-Type: application/json
+
+{
+        "path": "test_projects/simple"
+}
+
+
+# Packages
+GET http://localhost:3000/projects/simple/classes?search=Logger
