@@ -77,6 +77,12 @@
         cp (:classpath pi)]
     (assoc pi :classes (get-classes-from-classpath cp))))
 
+(defn remove-classes-from-output
+  "Remove classes from output"
+  [m]
+  (dissoc m :classes))
+
+
 (defn add-project
   "Add project from path"
   [path]

@@ -68,3 +68,13 @@
     (mvn/read-project-info "/path/toproject/simple") => {:project "simple"
                                                          :classpath ["/m2_repo/gid/aid/1.0/aid-1.0.jar"]}
     (get-classes-from-classpath ["/m2_repo/gid/aid/1.0/aid-1.0.jar"]) => [{:artifactid "aid-1.0.jar" :classes ["com.foo.Bar" "com.foo.Baz"]}]))
+
+
+(def the-classes [{:artifactid "aid-1.0.jar" :classes ["com.foo.Bar" "com.foo.Baz"]}])
+(def the-classpath ["/m2_repo/gid/aid/1.0/aid-1.0.jar"])
+
+
+(fact "Limit output to project name and classpath"
+  (remove-classes-from-output {:project "simple"
+                 :classpath the-classpath
+                 :classes the-classes}) => {:project "simple" :classpath the-classpath})
