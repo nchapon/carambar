@@ -26,7 +26,7 @@
   [p]
   (swap! projects conj p))
 
-(defn parse
+(defn get-jar-content
   "doc-string"
   [jar]
   (let [z (java.util.zip.ZipFile. jar)]
@@ -65,17 +65,17 @@
      (filter-by :classes (partial name-starts-with? c-name) p-classes))))
 
 
-(defn add-classes [cp]
-  (for [path (filter #(.endsWith % ".jar") cp)]
-    (try (parse path)
-       (catch Exception e path))))
+(defn get-classes-from-classpath [cp]
+  (for [jarfile (filter #(.endsWith % ".jar") cp)]
+    (try (get-jar-content jarfile)
+       (catch Exception e jarfile))))
 
 (defn make-project
   "Add project from PATH"
   [path]
   (let [pi (mvn/read-project-info path)
         cp (:classpath pi)]
-    (assoc pi :classes (add-classes cp))))
+    (assoc pi :classes (get-classes-from-classpath cp))))
 
 (defn add-project
   "Add project from path"

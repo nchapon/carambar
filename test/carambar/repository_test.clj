@@ -33,9 +33,9 @@
                     (jarfile "foo.jar" ["Foo.class" "foo/Bar.class"])
                     (jarfile "bar.jar" ["bar/Foo.class" "bar/Baz.class"])))]
   (fact "Foo.jar should have two classes when Jar has two files"
-    (parse "/tmp/foo.jar") => {:artifactid "/tmp/foo.jar" :classes ["Foo" "foo.Bar"]}
+    (get-jar-content "/tmp/foo.jar") => {:artifactid "/tmp/foo.jar" :classes ["Foo" "foo.Bar"]}
   (fact "Classpath should have two entries"
-    (count (add-classes ["/tmp/foo.jar" "/tmp/bar.jar"])) => 2)))
+    (count (get-classes-from-classpath ["/tmp/foo.jar" "/tmp/bar.jar"])) => 2)))
 
 
 (with-state-changes
@@ -67,4 +67,4 @@
   (provided
     (mvn/read-project-info "/path/toproject/simple") => {:project "simple"
                                                          :classpath ["/m2_repo/gid/aid/1.0/aid-1.0.jar"]}
-    (add-classes ["/m2_repo/gid/aid/1.0/aid-1.0.jar"]) => [{:artifactid "aid-1.0.jar" :classes ["com.foo.Bar" "com.foo.Baz"]}]))
+    (get-classes-from-classpath ["/m2_repo/gid/aid/1.0/aid-1.0.jar"]) => [{:artifactid "aid-1.0.jar" :classes ["com.foo.Bar" "com.foo.Baz"]}]))
