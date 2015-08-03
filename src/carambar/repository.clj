@@ -84,8 +84,14 @@
 
 
 (defn add-project
-  "Add project from path"
+  "Add project from PATH"
   [path]
   (-> path
       (make-project)
       (add-project!)))
+
+
+(defn list-projects
+  "List projects"
+  []
+  @projects)

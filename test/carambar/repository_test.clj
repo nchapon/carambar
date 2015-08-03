@@ -49,32 +49,45 @@
     (find-class "simple" "Baz") => ["com.foo.Baz" "com.bar.Baz"]
     (find-class "simple" "Ba") => ["com.foo.Bar" "com.foo.Baz" "com.bar.Baz"]))
 
-(facts "Match class name starts with."
+(facts "Should match class name starts with."
   (name-starts-with? "Baz" "com.foo.Baz") => nil
   (name-starts-with? "Baz" "com.foo.BazBar") => "com.foo.BazBar"
   (name-starts-with? "Baz" "com.foo.FooBaz") => nil)
 
-(facts "Match class name exactly."
+(facts "Should match class name exactly."
   (has-name? "Baz" "com.foo.Baz") => "com.foo.Baz"
   (has-name? "Baz" "com.foo.BazBar") => nil
   (has-name? "Baz" "com.foo.FooBaz") => nil)
 
 
-(fact "Make project"
+(fact "Should make a project which contains project name,
+        classpath and classes"
   (make-project "/path/toproject/simple") => {:project "simple"
                                               :classpath ["/m2_repo/gid/aid/1.0/aid-1.0.jar"]
                                               :classes [{:artifactid "aid-1.0.jar" :classes ["com.foo.Bar" "com.foo.Baz"]}]}
   (provided
-    (mvn/read-project-info "/path/toproject/simple") => {:project "simple"
-                                                         :classpath ["/m2_repo/gid/aid/1.0/aid-1.0.jar"]}
-    (get-classes-from-classpath ["/m2_repo/gid/aid/1.0/aid-1.0.jar"]) => [{:artifactid "aid-1.0.jar" :classes ["com.foo.Bar" "com.foo.Baz"]}]))
+    (mvn/read-project-info "/path/toproject/simple")
+    => {:project "simple" :classpath ["/m2_repo/gid/aid/1.0/aid-1.0.jar"]}
+    (get-classes-from-classpath ["/m2_repo/gid/aid/1.0/aid-1.0.jar"]) =>
+      [{:artifactid "aid-1.0.jar" :classes ["com.foo.Bar" "com.foo.Baz"]}]))
+
 
 
 (def the-classes [{:artifactid "aid-1.0.jar" :classes ["com.foo.Bar" "com.foo.Baz"]}])
 (def the-classpath ["/m2_repo/gid/aid/1.0/aid-1.0.jar"])
 
-
 (fact "Limit output to project name and classpath"
   (remove-classes-from-output {:project "simple"
                  :classpath the-classpath
                  :classes the-classes}) => {:project "simple" :classpath the-classpath})
+
+
+(with-state-changes
+  [(before :facts (do
+                    (reset! projects [])
+                    (add-project! {:project "simple"
+                                   :classes [{:artifactid "foo.jar" :classes ["com.foo.Bar" "com.foo.Baz"]}
+                                             {:artifactid "bar.jar" :classes ["com.bar.Kix" "com.bar.Baz"]}]})
+                    ))]
+  (facts "List projects"
+    (list-projects) => ["com.foo.Baz" "com.bar.Baz"]))

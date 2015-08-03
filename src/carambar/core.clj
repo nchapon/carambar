@@ -13,7 +13,9 @@
   (POST "/projects" req
         (let [path (get-in req [:body :path])]
           (response (repository/add-project path))))
-  (GET "/projects/:name/classes" [name search] (response {:classes (repository/find-class name search)})))
+  (GET "/projects/:name/classes" [name search] (response {:classes (repository/find-class name search)}))
+  (GET "/projects" [] (response {:projects (repository/list-projects)}))
+  )
 
 (defn init
   "Init carambar settings"
