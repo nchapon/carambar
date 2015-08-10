@@ -30,7 +30,7 @@
   "doc-string"
   [jar]
   (let [z (java.util.zip.ZipFile. jar)]
-    {:artifactid jar
+    {:jar jar
      :classes (map #(filename->javaclass (.getName %)) (entries z))}))
 
 
@@ -59,10 +59,10 @@
   "Find CLASSNAME from repo"
   [p-name c-name]
   (let [project (first (filter (partial has-project-name? p-name) @projects))
-        p-classes (:classes project)]
+        classpath (:classpath project)]
     (concat
-     (filter-by :classes (partial has-name? c-name) p-classes)
-     (filter-by :classes (partial name-starts-with? c-name) p-classes))))
+     (filter-by :classes (partial has-name? c-name) classpath)
+     (filter-by :classes (partial name-starts-with? c-name) classpath))))
 
 
 (defn get-classes-from-classpath [cp]
@@ -73,9 +73,8 @@
 (defn make-project
   "Add project from PATH"
   [path]
-  (let [pi (mvn/read-project-info path)
-        cp (:classpath pi)]
-    (assoc pi :classes (get-classes-from-classpath cp))))
+  (let [pi (mvn/read-project-info path)]
+    (update-in pi [:classpath] get-classes-from-classpath)))
 
 (defn remove-classes-from-output
   "Remove classes from output"
