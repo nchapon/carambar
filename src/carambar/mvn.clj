@@ -2,7 +2,8 @@
   (:require [clojure.zip :as zip]
             [clojure.xml :as xml]
             [clojure.java.shell :as sh]
-            [clojure.data.zip.xml :as zx]))
+            [clojure.data.zip.xml :as zx]
+            [carambar.system :as sys]))
 
 
 (defn attr-map
@@ -36,7 +37,7 @@
 (defn mvn
   "Runs mvn command"
   [{goal :goal pom :pom output :output}]
-  (let [mvn-ret (apply sh/sh "mvn" goal (mvn-output output) (mvn-pom pom))]
+  (let [mvn-ret (apply sh/sh (sys/mvn-command) goal (mvn-output output) (mvn-pom pom))]
     (if (= 0 (:exit mvn-ret))
        output
       (throw (Exception. (:out mvn-ret))))))
