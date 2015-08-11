@@ -1,7 +1,12 @@
 (ns carambar.system)
 
 
-(defmulti mvn-command (fn [] (subs (.toLowerCase (System/getProperty "os.name")) 0 3)))
+(defn get-os-name
+  "Returns os-name"
+  []
+  (subs (.toLowerCase (System/getProperty "os.name")) 0 3))
+
+(defmulti mvn-command get-os-name)
 
 (defmethod mvn-command "win" []
   "mvn.bat")
