@@ -2,6 +2,7 @@
   (:require [midje.sweet :refer :all]
             [clojure.zip :as zip]
             [clojure.xml :as xml]
+            [clojure.string :as str]
             [carambar.mvn :refer :all]))
 
 
@@ -43,7 +44,7 @@
   (dependencies pom-xml) =>  [{:artifactId "junit", :groupId "junit", :version "4.11"} {:artifactId "slf4j-api", :groupId "org.slf4j", :version "1.7.5"}])
 
 (fact "Mvn local repo should be initialized."
-  local-repo => "/home/nchapon/opt/m2_repo")
+  (str/blank? local-repo) => false)
 
 (with-redefs [local-repo "/m2_repo"]
   (fact "Should expand dependency path."
