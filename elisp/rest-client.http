@@ -16,5 +16,15 @@ Content-Type: application/json
 }
 
 
+# Add project
+POST http://localhost:3000/test
+Content-Type: application/json
+
+{
+        "path": "test_projects/simple"
+}
+
+
+
 # Packages
 GET http://localhost:3000/projects/simple/classes?search=Logger
