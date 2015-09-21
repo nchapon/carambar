@@ -3,7 +3,7 @@
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :main carambar.core
+  :main carambar.main
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.clojure/data.zip "0.1.1"]
                  [org.clojure/tools.logging "0.3.1"]
@@ -15,8 +15,9 @@
                  [ring/ring-json "0.4.0"]
                  [ring/ring-defaults "0.1.5"]]
   :profiles {:dev {:plugins []
-                   :dependencies [[reloaded.repl "0.2.0"]]
-                   ;;:source-paths ["dev"]
+                   :dependencies [[reloaded.repl "0.2.0"]
+                                  [midje "1.6.3"]]
+                   :source-paths ["dev"]
                    }}
   :uberjar-name "carambar.jar"
   :repl-options {:timeout 120000}

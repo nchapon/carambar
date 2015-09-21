@@ -28,3 +28,7 @@ Content-Type: application/json
 
 # Packages
 GET http://localhost:3000/projects/simple/classes?search=Logger
+
+
+# Projects
+GET http://localhost:3000/projects
