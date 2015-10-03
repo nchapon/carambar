@@ -6,7 +6,6 @@
             [compojure.core :refer [GET POST defroutes]]
             [clojure.tools.logging :as log]
             [cheshire.core :as json]
-            [org.httpkit.server :refer [run-server]]
             [ring.middleware.json :as middleware]
             [ring.middleware.defaults :refer :all]))
 
@@ -23,38 +22,13 @@
   (GET "/projects" []
        (response {:projects (repository/list-projects)})))
 
-(defn init
-  "Init carambar settings"
-  []
-  (log/info "Init carambar : " mvn/local-repo))
+;; (defn init
+;;   "Init carambar settings"
+;;   []
+;;   (log/info "Init carambar : " mvn/local-repo))
 
 ;; Chain middlewares with handler
 (def app
   (-> (wrap-defaults app-routes api-defaults) ;; can get query params
       (middleware/wrap-json-body {:keywords? true})
       (middleware/wrap-json-response)))
-
-(defn- start-server [handler port]
-  (let [server (run-server handler {:port port})]
-    (init)
-    (println (str "Start carambar on port " port))
-    server))
-
-;; (defn- stop-server [server]
-;;   (when (server)
-;;     (server)))
-
-;; (defrecord Carambar []
-;;     component/Lifecycle
-;;     (start [this]
-;;       (assoc this :server (start-server #'app 3000)))
-
-;;     (stop [this]
-;;       (stop-server (:server this))
-;;       (dissoc this :server)))
-
-;; (defn create-system []
-;;   (Carambar.))
-
-(defn -main [& args]
-  (start-server #'app 3000))

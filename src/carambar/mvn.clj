@@ -3,8 +3,8 @@
             [clojure.xml :as xml]
             [clojure.java.shell :as sh]
             [clojure.data.zip.xml :as zx]
+            [environ.core :refer [env]]
             [carambar.system :as sys]))
-
 
 (defn attr-map
   "doc-string"
@@ -38,31 +38,15 @@
   "Runs mvn command"
   [{goal :goal pom :pom output :output}]
   (let [mvn-ret (apply sh/sh (sys/mvn-command) goal (mvn-output output) (mvn-pom pom))]
-    (if (= 0 (:exit mvn-ret))
+     (if (= 0 (:exit mvn-ret))
        output
       (throw (Exception. (:out mvn-ret))))))
 
-(defn mvn-settings
-  "doc-string"
-  [settings]
-  (let [xz (zip/xml-zip (xml/parse settings))]
-    (zx/xml1-> xz :localRepository zx/text)))
-
-(def effective-settings-path (format "%s/mvn-settings.xml" (System/getProperty "java.io.tmpdir")))
 
 (def effective-pom-path
   (format "%s/effective-pom.xml" (System/getProperty "java.io.tmpdir")))
 
-
-(defn mvn-help:effective-settings
-  "Maven help:effective settings command."
-  []
-  (mvn {:goal "help:effective-settings"
-        :output effective-settings-path}))
-
-(def local-repo
-  (-> (mvn-help:effective-settings)
-      (mvn-settings)))
+(def local-repo (env :mvn-repository))
 
 (defn mvn-help:effective-pom
   [project-dir]

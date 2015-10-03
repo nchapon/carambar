@@ -1,27 +1,29 @@
 (ns carambar.main
-  (:require [com.stuartsierra.component :as component]))
+  (:require [com.stuartsierra.component :as component]
+            [org.httpkit.server :refer [run-server]]
+            [carambar.core :refer :all]))
 
 
-;; (defn- start-server [handler port]
-;;   (let [server (run-server handler {:port port})]
-;;     (init)
-;;     (println (str "Start carambar on port " port))
-;;     server))
+(defn- start-server [handler port]
+  (let [server (run-server handler {:port port})]
+    (println (str "Start carambar on port " port))
+    server))
 
-;; (defn- stop-server [server]
-;;   (when (server)
-;;     (server)))
+(defn- stop-server [server]
+  (when (server)
+    (server)))
 
 (defrecord Carambar []
     component/Lifecycle
     (start [this]
-      (println  "Start Carambar"))
+      (assoc this :server (start-server #'app 3000)))
 
     (stop [this]
-      (println  "Stop Carambar")))
+      (stop-server (:server this))
+      (dissoc this :server)))
 
 (defn create-system []
   (Carambar.))
 
-;; (defn -main [& args]
-;;   (start-server #'app 3000))
+(defn -main [& args]
+  (start-server #'app 3000))

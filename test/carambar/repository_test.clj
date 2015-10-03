@@ -48,13 +48,13 @@
 (with-state-changes
   [(before :facts (do
                     (reset! projects [])
-                    (add-project! {:project "simple"
+                    (add-project! {:project "project-name"
                                    :classpath [{:jar "/tmp/foo.jar" :classes ["com.foo.Bar" "com.foo.Baz"]}
                                              {:jar "/tmp/bar.jar" :classes ["com.bar.Kix" "com.bar.Baz"]}]})
                     ))]
   (facts "Filter repository by predicate"
-    (find-class "simple" "Baz") => ["com.foo.Baz" "com.bar.Baz"]
-    (find-class "simple" "Ba") => ["com.foo.Bar" "com.foo.Baz" "com.bar.Baz"]))
+    (find-class "project-name" "Baz") => ["com.foo.Baz" "com.bar.Baz"]
+    (find-class "project-name" "Ba") => ["com.foo.Bar" "com.foo.Baz" "com.bar.Baz"]))
 
 (facts "Should match class name starts with."
   (name-starts-with? "Baz" "com.foo.Baz") => nil
@@ -69,12 +69,12 @@
 
 (fact "Should make a project which contains project name,
         classpath and classes"
-  (make-project "/path/toproject/simple") => {:project "simple"
+  (make-project "/path/toproject/project-name") => {:project "project-name"
                                               :classpath
                                               [{:jar "/m2_repo/gid/aid/1.0/aid-1.0.jar" :classes ["com.foo.Bar" "com.foo.Baz"]}]}
   (provided
-    (mvn/read-project-info "/path/toproject/simple")
-    => {:project "simple" :classpath ["/m2_repo/gid/aid/1.0/aid-1.0.jar"]}
+    (mvn/read-project-info "/path/toproject/project-name")
+    => {:project "project-name" :classpath ["/m2_repo/gid/aid/1.0/aid-1.0.jar"]}
     (get-classes-from-classpath ["/m2_repo/gid/aid/1.0/aid-1.0.jar"]) =>
       [{:jar "/m2_repo/gid/aid/1.0/aid-1.0.jar" :classes ["com.foo.Bar" "com.foo.Baz"]}]))
 
@@ -84,17 +84,17 @@
 (def the-classpath ["/m2_repo/gid/aid/1.0/aid-1.0.jar"])
 
 (fact "Limit output to project name and classpath"
-  (remove-classes-from-output {:project "simple"
+  (remove-classes-from-output {:project "project-name"
                  :classpath the-classpath
-                 :classes the-classes}) => {:project "simple" :classpath the-classpath})
+                 :classes the-classes}) => {:project "project-name" :classpath the-classpath})
 
 (comment
   (with-state-changes
     [(before :facts (do
                       (reset! projects [])
-                      (add-project! {:project "simple"
+                      (add-project! {:project "project-name"
                                      :classes [{:jar "foo.jar" :classes ["com.foo.Bar" "com.foo.Baz"]}
                                                {:jar "bar.jar" :classes ["com.bar.Kix" "com.bar.Baz"]}]})
                       ))]
     (facts "List projects"
-      (list-projects) => ["simple"])))
+      (list-projects) => ["project-name"])))

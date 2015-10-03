@@ -11,14 +11,13 @@
                  [ch.qos.logback/logback-classic "1.1.3"]
                  [http-kit "2.1.18"]
                  [compojure "1.3.4"]
-                 [com.stuartsierra/component "0.2.3"]
+                 [com.stuartsierra/component "0.3.0"]
                  [ring/ring-json "0.4.0"]
-                 [ring/ring-defaults "0.1.5"]]
+                 [ring/ring-defaults "0.1.5"]
+                 [environ "1.0.1"]]
   :profiles {:dev {:plugins []
                    :dependencies [[reloaded.repl "0.2.0"]
                                   [midje "1.6.3"]]
                    :source-paths ["dev"]
                    }}
-  :uberjar-name "carambar.jar"
-  :repl-options {:timeout 120000}
-  )
+  :uberjar-name "carambar.jar")
