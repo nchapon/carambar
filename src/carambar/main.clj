@@ -1,7 +1,8 @@
 (ns carambar.main
   (:require [com.stuartsierra.component :as component]
             [org.httpkit.server :refer [run-server]]
-            [carambar.core :refer :all]))
+            [carambar.core :refer :all])
+  (:gen-class))
 
 
 (defn- start-server [handler port]

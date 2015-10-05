@@ -16,12 +16,12 @@ Content-Type: application/json
 }
 
 
-# Add project
-POST http://localhost:3000/test
+# Add project from fully qualified path
+POST http://localhost:3000/projects
 Content-Type: application/json
 
 {
-        "path": "test_projects/simple"
+        "path": "/home/nchapon/work/clojure/dev/carambar/test_projects/simple"
 }
 
 

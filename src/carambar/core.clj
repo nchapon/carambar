@@ -22,11 +22,6 @@
   (GET "/projects" []
        (response {:projects (repository/list-projects)})))
 
-;; (defn init
-;;   "Init carambar settings"
-;;   []
-;;   (log/info "Init carambar : " mvn/local-repo))
-
 ;; Chain middlewares with handler
 (def app
   (-> (wrap-defaults app-routes api-defaults) ;; can get query params
