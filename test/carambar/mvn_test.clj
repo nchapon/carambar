@@ -43,8 +43,6 @@
 (fact "Read dependencies"
   (dependencies pom-xml) =>  [{:artifactId "junit", :groupId "junit", :version "4.11"} {:artifactId "slf4j-api", :groupId "org.slf4j", :version "1.7.5"}])
 
-(fact "Mvn local repo should be initialized."
-  (str/blank? local-repo) => false)
 
 (with-redefs [local-repo "/m2_repo"]
   (fact "Should expand dependency path."
