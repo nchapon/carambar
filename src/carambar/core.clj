@@ -10,7 +10,7 @@
             [ring.middleware.defaults :refer :all]))
 
 (defroutes app-routes
-  (GET "/" [] (response {:carambar "OK"}))
+  (GET "/" [] (response {:carambar "OK" :mvn-repository mvn/local-repo}))
   (POST "/projects" {:keys [body]}
         (let [path (:path body)]
           (repository/add-project path)
