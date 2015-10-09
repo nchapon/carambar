@@ -87,14 +87,3 @@
   (remove-classes-from-output {:project "project-name"
                  :classpath the-classpath
                  :classes the-classes}) => {:project "project-name" :classpath the-classpath})
-
-(comment
-  (with-state-changes
-    [(before :facts (do
-                      (reset! projects [])
-                      (add-project! {:project "project-name"
-                                     :classes [{:jar "foo.jar" :classes ["com.foo.Bar" "com.foo.Baz"]}
-                                               {:jar "bar.jar" :classes ["com.bar.Kix" "com.bar.Baz"]}]})
-                      ))]
-    (facts "List projects"
-      (list-projects) => ["project-name"])))

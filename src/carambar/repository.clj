@@ -89,8 +89,10 @@
       (make-project)
       (add-project!)))
 
-
-(defn list-projects
-  "List projects"
+(defn status
+  "Carambar status"
   []
-  @projects)
+  {:status "Running"
+   :boot-classpath boot-classpath
+   :mvn-repository mvn/local-repo
+   :projects (map :project @projects)})

@@ -1,6 +1,5 @@
 (ns carambar.core
   (:require [carambar.repository :as repository]
-            [carambar.mvn :as mvn]
             [com.stuartsierra.component :as component]
             [ring.util.response :refer [response status]]
             [compojure.core :refer [GET POST defroutes]]
@@ -10,17 +9,13 @@
             [ring.middleware.defaults :refer :all]))
 
 (defroutes app-routes
-  (GET "/" [] (response {:carambar "OK" :mvn-repository mvn/local-repo}))
+  (GET "/" [] (response (repository/status)))
   (POST "/projects" {:keys [body]}
         (let [path (:path body)]
           (repository/add-project path)
           (status (response "") 201)))
-  (POST "/test" {:keys [body]}
-        (response (slurp body)))
   (GET "/projects/:name/classes" [name search]
-       (response {:classes (repository/find-class name search)}))
-  (GET "/projects" []
-       (response {:projects (repository/list-projects)})))
+       (response {:classes (repository/find-class name search)})))
 
 ;; Chain middlewares with handler
 (def app
