@@ -4,7 +4,8 @@
             [clojure.java.shell :as sh]
             [clojure.data.zip.xml :as zx]
             [environ.core :refer [env]]
-            [carambar.system :as sys]))
+            [carambar.system :as sys]
+            [cemerick.pomegranate.aether :as aether]))
 
 (defn attr-map
   "doc-string"

@@ -10,6 +10,7 @@
                  [org.slf4j/slf4j-api "1.7.12"]
                  [ch.qos.logback/logback-classic "1.1.3"]
                  [http-kit "2.1.18"]
+                 [com.cemerick/pomegranate "0.3.0"]
                  [compojure "1.3.4"]
                  [com.stuartsierra/component "0.3.0"]
                  [ring/ring-json "0.4.0"]
