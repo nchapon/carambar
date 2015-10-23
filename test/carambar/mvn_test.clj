@@ -2,7 +2,8 @@
   (:require [clojure.zip :as zip]
             [clojure.xml :as xml]
             [clojure.string :as str]
-            [carambar.mvn :refer :all])
+            [carambar.mvn :refer :all]
+            [midje.sweet :refer :all])
   (:use [clojure.test]))
 
 
@@ -33,17 +34,24 @@
 </project>")
 
 
-(def pom-xml
-  (-> content
+(defn pom-zip [xml]
+  (-> xml
     .getBytes
     java.io.ByteArrayInputStream.
     xml/parse
     zip/xml-zip))
 
-(deftest read-dependencies
-  (let [deps [{:artifactId "junit", :groupId "junit", :version "4.11"} {:artifactId "slf4j-api", :groupId "org.slf4j", :version "1.7.5"}]]
-    (is (= deps (dependencies pom-xml)))))
 
+(def pom-xml (pom-zip content))
+
+(fact "Should read dependencies from pom.xml in a vector"
+  (let [deps '[[junit "4.11"] [org.slf4j/slf4j-api "1.7.5"]]]
+    (dependencies pom-xml) => deps))
+
+
+(facts "Transform dependency map in a vector"
+  (dependency-vec {:groupId "org.slf4j", :artifactId "slf4j-api", :version "1.7.5"}) => '[org.slf4j/slf4j-api "1.7.5"]
+  (dependency-vec {:groupId "junit", :artifactId "junit", :version "4.11"}) => '[junit "4.11"])
 
 (comment "Should be rewrite !!"
   (with-redefs [local-repo "/m2_repo"]

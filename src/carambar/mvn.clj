@@ -7,6 +7,21 @@
             [carambar.system :as sys]
             [cemerick.pomegranate.aether :as aether]))
 
+
+
+
+(defn- group-artifact
+  [groupId artifactId]
+  (if (= groupId artifactId)
+    (symbol artifactId)
+    (symbol groupId artifactId)))
+
+(defn dependency-vec
+  "Transform a dependency map into dependency vector"
+  [m]
+  (let [{:keys [artifactId groupId version]} m]
+    [(group-artifact groupId artifactId) version]))
+
 (defn attr-map
   "doc-string"
   [loc ks]
@@ -15,12 +30,14 @@
    {}
    ks))
 
-(defn dependency [dependency]
+(defn dependency-map [dependency]
   (attr-map dependency [:groupId :artifactId :version]))
+
 
 (defn dependencies
   [pom-zip]
-  (zx/xml-> pom-zip :dependencies :dependency dependency))
+  (map dependency-vec
+       (zx/xml-> pom-zip :dependencies :dependency dependency-map)))
 
 (defn mvn-output
   "doc-string"
