@@ -70,6 +70,3 @@
            "/m2_repo/org/slf4j/slf4j-api/1.7.8/slf4j-api-1.7.8.jar"
            "/m2_repo/ch/qos/logback/logback-classic/1.1.2/logback-classic-1.1.2.jar"
            "/m2_repo/ch/qos/logback/logback-core/1.1.2/logback-core-1.1.2.jar"]})))
-
-(comment "Step"
-  (aether/dependency-files (aether/resolve-dependencies :coordinates '[[junit "4.12"]])))
