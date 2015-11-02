@@ -3,6 +3,7 @@
 # C-c C-v runs the query in another buffer
 # C-c C-p: jump to the previous query
 # C-c C-n: jump to the previous query
+# Testing Caramabar
 
 # Test Carambar
 GET http://localhost:3000/
@@ -15,20 +16,5 @@ Content-Type: application/json
         "path": "test_projects/simple"
 }
 
-
-# Add project from fully qualified path
-POST http://localhost:3000/projects
-Content-Type: application/json
-
-{
-        "path": "/home/nchapon/work/clojure/dev/carambar/test_projects/simple"
-}
-
-
-
-# Packages
-GET http://localhost:3000/projects/simple/classes?search=Logger
-
-
-# Projects
-GET http://localhost:3000/projects
+# Should returns two items
+GET http://localhost:3000/projects/simple/classes?search=Factory
