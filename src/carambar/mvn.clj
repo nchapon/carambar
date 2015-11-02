@@ -7,9 +7,6 @@
             [carambar.system :as sys]
             [cemerick.pomegranate.aether :as aether]))
 
-
-
-
 (defn- group-artifact
   [groupId artifactId]
   (if (= groupId artifactId)
@@ -87,7 +84,9 @@
   (let [xz (zip/xml-zip (xml/parse pom))]
     (merge
      {:project (zx/xml1-> xz :artifactId zx/text)}
-     {:classpath (map expand-dependency-path (dependencies xz))})))
+     {:classpath (map
+                  #(.getAbsolutePath %)
+                  (aether/dependency-files (aether/resolve-dependencies :coordinates (dependencies xz) :local-repo local-repo)))})))
 
 (defn read-project-info
   "Process maven project from DIR"
