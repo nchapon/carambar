@@ -16,5 +16,8 @@ Content-Type: application/json
         "path": "test_projects/simple"
 }
 
-# Should returns two items
+# Get Projec
+GET http://localhost:3000/projects/simple
+
+# Search classes hould returns two items
 GET http://localhost:3000/projects/simple/classes?search=Factory

@@ -55,10 +55,14 @@
   [name s]
   (= name (:project s)))
 
+(defn find-project
+  [p-name]
+  (first (filter (partial has-project-name? p-name) @projects)))
+
 (defn find-class
   "Find CLASSNAME from repo"
   [p-name c-name]
-  (let [project (first (filter (partial has-project-name? p-name) @projects))
+  (let [project (find-project p-name)
         classpath (:classpath project)]
     (concat
      (filter-by :classes (partial has-name? c-name) classpath)

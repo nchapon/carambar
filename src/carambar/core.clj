@@ -14,6 +14,8 @@
         (let [path (:path body)]
           (repository/add-project path)
           (status (response "") 201)))
+  (GET "/projects/:name" [name]
+       (response (repository/find-project name)))
   (GET "/projects/:name/classes" [name search]
        (response {:classes (repository/find-class name search)})))
 
