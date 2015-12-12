@@ -33,7 +33,6 @@
     {:jar jar
      :classes (map #(filename->javaclass (.getName %)) (entries z))}))
 
-
 (defn has-name?
   [re s]
   (re-matches (re-pattern (str ".*\\." re "$")) s))
@@ -59,6 +58,16 @@
   [p-name]
   (first (filter (partial has-project-name? p-name) @projects)))
 
+(defn map-project-classpath
+  "Map project classpath."
+  [p]
+  (map :jar (:classpath p)))
+
+(defn get-classpath
+  "Get classpath by project name."
+  [s]
+  (map-project-classpath (find-project s)))
+
 (defn find-class
   "Find CLASSNAME from repo"
   [p-name c-name]
@@ -67,7 +76,6 @@
     (concat
      (filter-by :classes (partial has-name? c-name) classpath)
      (filter-by :classes (partial name-starts-with? c-name) classpath))))
-
 
 (defn get-classes-from-classpath [cp]
   (for [jarfile (filter #(.endsWith % ".jar") cp)]

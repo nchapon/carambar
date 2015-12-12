@@ -45,12 +45,11 @@
     (count (get-classes-from-classpath [(expand-filename tmpdir "foo.jar") (expand-filename tmpdir "bar.jar")])) => 2))
 
 
-(def project {:project "project-name"
-                                   :classpath [{:jar "/tmp/foo.jar" :classes ["com.foo.Bar" "com.foo.Baz"]}
-                                             {:jar "/tmp/bar.jar" :classes ["com.bar.Kix" "com.bar.Baz"]}]})
+(def project
+  {:project "project-name"
+   :classpath [{:jar "/tmp/foo.jar" :classes ["com.foo.Bar" "com.foo.Baz"]}
+               {:jar "/tmp/bar.jar" :classes ["com.bar.Kix" "com.bar.Baz"]}]})
 
-;.;. Before the reward there must be labor. You plant before you
-;.;. harvest. You sow in tears before you reap joy. -- Ransom
 (with-state-changes
   [(before :facts (do
                     (reset! projects [])
@@ -61,6 +60,10 @@
   (facts "Filter repository by predicate"
     (find-class "project-name" "Baz") => ["com.foo.Baz" "com.bar.Baz"]
     (find-class "project-name" "Ba") => ["com.foo.Bar" "com.foo.Baz" "com.bar.Baz"]))
+
+
+(fact "Map project classpath"
+  (map-project-classpath project) => ["/tmp/foo.jar" "/tmp/bar.jar"])
 
 (facts "Should match class name starts with."
   (name-starts-with? "Baz" "com.foo.Baz") => nil
