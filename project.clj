@@ -15,6 +15,7 @@
                  [com.stuartsierra/component "0.3.0"]
                  [ring/ring-json "0.4.0"]
                  [ring/ring-defaults "0.1.5"]
+                 [org.eclipse.jdt.core.compiler/ecj "4.4.2"]
                  [environ "1.0.1"]]
   :profiles {:dev {:plugins []
                    :dependencies [[reloaded.repl "0.2.0"]
